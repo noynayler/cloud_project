@@ -1,0 +1,53 @@
+:root {
+    --primary-color: #007bff;
+    --hover-color: #0056b3;
+    --border-color: #ddd;
+    --text-color: #666;
+    --background-color: #f9f9f9;
+}
+
+.card, .addNewCard, .form {
+    font-family: 'Arial', sans-serif;
+    color: var(--text-color);
+    background-color: var(--background-color);
+    border-color: var(--border-color);
+}
+
+.button {
+    background-color: var(--primary-color);
+}
+
+.button:hover {
+    background-color: var(--hover-color);
+}
+
+.button, .card, .addNewCard {
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.button:hover,
+.addNewCard:hover {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.card:hover {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* More pronounced shadow on hover */
+}
+
+.card, .addNewCard, .placeholderCard {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem;
+    width: 100%; /* Responsive width */
+    max-width: 300px; /* Maintain layout consistency */
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.textarea, .input {
+    width: 100%; /* Consistent full-width inputs */
+    padding: 0.8rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+}
+
