@@ -2,12 +2,19 @@ require('dotenv').config();
 const app = require('./app');
 const sequelize = require('./config/dbConfig');
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 
-sequelize.sync().then(() => {
+
+sequelize.authenticate()
+  .then(() => {
+    console.log('Connection has been established successfully.');
+    return sequelize.sync();
+  })
+  .then(() => {
     app.listen(PORT, () => {
-        console.log(`Server running on port ${PORT}`);
+      console.log(`Server running on port ${PORT}`);
     });
-}).catch(err => {
-    console.error('Error starting the server:', err);
-});
+  })
+  .catch(err => {
+    console.error('Unable to connect to the database:', err);
+  });

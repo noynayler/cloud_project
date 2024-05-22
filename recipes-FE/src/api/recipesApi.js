@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const apiEndpoint = 'http://localhost:3000/recipesBook';
+const apiEndpoint = 'http://localhost:3001/recipesBook';
 
 export const fetchRecipes = () => axios.get(apiEndpoint);
 export const fetchRecipe = id => axios.get(`${apiEndpoint}/${id}`);
