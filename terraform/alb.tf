@@ -8,7 +8,7 @@ resource "aws_lb" "myalb" {
 resource "aws_lb_target_group" "front" {
   name        = "front"
   target_type = "instance"
-  port        = "3001"
+  port        = "3000"
   protocol    = "HTTP"
   vpc_id      = module.vpc.vpc_id
 
@@ -16,7 +16,7 @@ resource "aws_lb_target_group" "front" {
     path     = "/"
     protocol = "HTTP"
     matcher  = "200"
-    interval = 15
+    interval = 6
     healthy_threshold = 2
 
   }
@@ -28,16 +28,16 @@ resource "aws_lb_target_group" "front" {
 resource "aws_lb_target_group" "back" {
   name        = "back"
   target_type = "instance"
-  port        = "3000"
+  port        = "3001"
   protocol    = "HTTP"
   vpc_id      = module.vpc.vpc_id
 
   health_check {
-    port = "3001"
+    port = "3000"
     path     = "/"
     protocol = "HTTP"
     matcher  = "200"
-    interval = 15
+    interval = 6
     healthy_threshold = 2
 
   }
@@ -69,7 +69,7 @@ resource "aws_lb_listener_rule" "static" {
 
   condition {
     path_pattern {
-      values = ["/api/"]
+      values = ["/recipesBook/*"]
     }
   }
 }

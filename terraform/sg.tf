@@ -20,19 +20,19 @@ resource "aws_security_group" "web_servers" {
     description = "ssh access"
   }
 
-  ingress {
-    from_port   = 3000
-    to_port     = 3000
-    protocol    = "tcp"
-    security_groups = [aws_security_group.web_server_lb.id]
-  }
-
-  ingress {
-    from_port   = 3001
-    to_port     = 3001
-    protocol    = "tcp"
-    security_groups = [aws_security_group.web_server_lb.id]
-  }
+#  ingress {
+#    from_port   = 3000
+#    to_port     = 3000
+#    protocol    = "tcp"
+#    security_groups = [aws_security_group.web_server_lb.id]
+#  }
+#
+#  ingress {
+#    from_port   = 3001
+#    to_port     = 3001
+#    protocol    = "tcp"
+#    security_groups = [aws_security_group.web_server_lb.id]
+#  }
   #outbound
   egress {
     from_port        = 0
@@ -73,7 +73,7 @@ resource "aws_security_group" "web_server_lb" {
     ipv6_cidr_blocks = ["::/0"]
   }
 }
-#Access between the ALB to the application in the App porr - in this case port 80
+#Access between the ALB to the application in the App porr
 
 resource "aws_security_group" "internal" {
   name = "web-server-internal"

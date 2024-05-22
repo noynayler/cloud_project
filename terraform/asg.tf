@@ -11,7 +11,7 @@ resource "aws_launch_template" "asg-launch-template" {
     }
   }
   iam_instance_profile {
-    name = aws_iam_instance_profile.ec2_instance_profile.name
+   name = aws_iam_instance_profile.ec2_instance_profile.name // ec2_role
   }
   user_data = filebase64("${path.module}/app-start.sh")
 }
