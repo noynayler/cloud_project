@@ -9,7 +9,7 @@ const fetchApiEndpoint = async () => {
       // Make a request to fetch the API endpoint URL
       const response = await axios.get('/api/backend-url'); // Assuming the backend exposes this endpoint
       // Assuming the response contains the URL
-      apiEndpoint = `${response.data.url}/recipesBook`;
+      apiEndpoint = `${response.data.url}:3001/recipesBook`;
     } catch (error) {
       // If there is an error fetching the DNS, assume localhost
       apiEndpoint = 'http://localhost:3001/recipesBook';
