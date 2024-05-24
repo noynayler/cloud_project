@@ -3,6 +3,12 @@ const { getAllRecipes, getRecipe, createRecipe, updateRecipe, deleteRecipe } = r
 
 const router = express.Router();
 
+// Middleware to log the request path
+router.use((req, res, next) => {
+    console.log("Request path:", req.path);
+    next();
+});
+
 router.get('/', getAllRecipes);
 router.get('/:id', getRecipe);
 router.post('/', createRecipe);
