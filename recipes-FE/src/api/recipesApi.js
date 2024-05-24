@@ -1,5 +1,6 @@
 import axios from 'axios';
 
+
 let apiEndpoint = ''; // Variable to store the API endpoint URL
 
 // Function to fetch API endpoint URL if not already fetched
@@ -19,9 +20,13 @@ const fetchApiEndpoint = async () => {
   return apiEndpoint;
 };
 
-// Fetch the API endpoint once
-fetchApiEndpoint();
+// Fetch the API endpoint once and then make requests
+const initializeApi = async () => {
+  await fetchApiEndpoint();
+};
 
+// Call initializeApi to fetch the API endpoint URL
+initializeApi();
 
 export const fetchRecipes = () => axios.get(apiEndpoint);
 export const fetchRecipe = id => axios.get(`${apiEndpoint}/${id}`);
