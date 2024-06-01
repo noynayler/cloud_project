@@ -1,5 +1,5 @@
 const express = require('express');
-const { getAllRecipes, getRecipe, createRecipe, updateRecipe, deleteRecipe } = require('../controllers/recipeController');
+const { testS3Connection, getAllRecipes, getRecipe, createRecipe, updateRecipe, deleteRecipe } = require('../controllers/recipeController');
 
 const router = express.Router();
 
@@ -9,6 +9,7 @@ router.use((req, res, next) => {
     next();
 });
 
+router.get('/test-s3', testS3Connection); // Test S3 connection
 router.get('/', getAllRecipes);
 router.get('/:id', getRecipe);
 router.post('/', createRecipe);

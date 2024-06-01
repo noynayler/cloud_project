@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styles from '../styles/RecipeForm.module.css';
 
 function RecipeForm({ onSubmit }) {
-  const [recipe, setRecipe] = useState({ title: '', ingredients: '', directions: '' });
+  const [recipe, setRecipe] = useState({ title: '', ingredients: '', directions: '', photo: null });
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -12,10 +12,18 @@ function RecipeForm({ onSubmit }) {
     }));
   };
 
+  const handlePhotoChange = (event) => {
+    const photoFile = event.target.files[0];
+    setRecipe(prev => ({
+      ...prev,
+      photo: photoFile
+    }));
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
     onSubmit(recipe);
-    setRecipe({ title: '', ingredients: '', directions: '' }); // Reset form after submission
+    setRecipe({ title: '', ingredients: '', directions: '', photo: null }); // Reset form after submission
   };
 
   return (
@@ -53,10 +61,19 @@ function RecipeForm({ onSubmit }) {
             required
           />
         </div>
+        <div className={styles.inputGroup}>
+          <label className={styles.label}>Photo</label>
+          <input
+            type="file"
+            name="photo"
+            onChange={handlePhotoChange}
+            accept="image/*"
+            className={styles.fileInput}
+          />
+        </div>
         <button type="submit" className={styles.button}>Save Recipe</button>
       </form>
     </div>
   );
 }
-
 export default RecipeForm;

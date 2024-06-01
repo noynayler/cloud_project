@@ -50,4 +50,15 @@
     border: 1px solid var(--border-color);
     border-radius: 4px;
 }
+.inputGroup {
+  margin-bottom: 1rem; /* Add margin-bottom to create space between input groups */
+}
 
+.label {
+  display: block;
+  margin-bottom: 0.5rem; /* Add margin-bottom to create space between label and input */
+}
+
+.fileInput {
+  margin-top: 0.5rem; /* Add margin-top to create space between photo title and file input */
+}

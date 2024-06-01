@@ -18,7 +18,11 @@ const Recipe = sequelize.define('Recipe', {
     directions: {
         type: DataTypes.TEXT,
         allowNull: false
-    }
+    },
+      photoUrl: {
+        type: DataTypes.STRING,
+        allowNull: true // Allow null if no photo is uploaded
+      }
 }, {
     tableName: 'recipes',
     timestamps: false
