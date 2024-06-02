@@ -22,7 +22,17 @@ function RecipeForm({ onSubmit }) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    onSubmit(recipe);
+
+    // Create a FormData object
+    const formData = new FormData();
+    formData.append('title', recipe.title);
+    formData.append('ingredients', recipe.ingredients);
+    formData.append('directions', recipe.directions);
+    formData.append('photo', recipe.photo);
+
+    // Call onSubmit with the FormData object
+    onSubmit(formData);
+
     setRecipe({ title: '', ingredients: '', directions: '', photo: null }); // Reset form after submission
   };
 
@@ -76,4 +86,5 @@ function RecipeForm({ onSubmit }) {
     </div>
   );
 }
+
 export default RecipeForm;
