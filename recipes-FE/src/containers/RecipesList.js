@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { createRecipe, fetchRecipes, updateRecipe, deleteRecipe } from '../api/recipesApi';
+import { fetchRecipes, createRecipe, deleteRecipe } from '../api/recipesApi';
 import RecipeCard from '../components/RecipeCard';
 import RecipeForm from '../components/RecipeForm';
-import styles from '../styles/RecipeForm.module.css';
+import styles from '../styles/RecipeList.module.css';
 
-function RecipesList() {
+function RecipeList() {
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [addingRecipe, setAddingRecipe] = useState(false); // For toggling the add form
+  const [addingRecipe, setAddingRecipe] = useState(false);
+  const [selectedRecipeId, setSelectedRecipeId] = useState(null);
 
   useEffect(() => {
     loadRecipes();
@@ -25,29 +26,32 @@ function RecipesList() {
   };
 
   const handleAddNewRecipe = () => {
-    setAddingRecipe(true); // Toggle add recipe form
+    setAddingRecipe(true);
   };
 
   const handleRecipeSubmit = (newRecipe) => {
     createRecipe(newRecipe).then(() => {
       setAddingRecipe(false);
-      loadRecipes(); // Refresh the list after adding
+      loadRecipes();
     });
   };
 
-const handleRecipeDelete = async (recipeId) => {
-  try {
-    const response = await deleteRecipe(recipeId);
-   loadRecipes();
-  } catch (error) {
-    console.error('Error deleting recipe:', error);
-    loadRecipes();  // Use as a fallback to ensure sync with the server
-  }
-};
+  const handleRecipeDelete = async (recipeId) => {
+    try {
+      await deleteRecipe(recipeId);
+      loadRecipes();
+    } catch (error) {
+      console.error('Error deleting recipe:', error);
+      loadRecipes();
+    }
+  };
 
+  const handleCardClick = (id) => {
+    setSelectedRecipeId(selectedRecipeId === id ? null : id);
+  };
 
   return (
-    <div>
+    <div className={styles.container}>
       {addingRecipe ? (
         <RecipeForm onSubmit={handleRecipeSubmit} />
       ) : (
@@ -56,11 +60,23 @@ const handleRecipeDelete = async (recipeId) => {
         </div>
       )}
 
-      {loading ? <p>Loading recipes...</p> : recipes.map(recipe => (
-        <RecipeCard key={recipe.id} recipe={recipe} onDelete={() => handleRecipeDelete(recipe.id)} />
-      ))}
+      {loading ? (
+        <p>Loading recipes...</p>
+      ) : (
+        <div className={styles.recipeGrid}>
+          {recipes.map(recipe => (
+            <RecipeCard
+              key={recipe.id}
+              recipe={recipe}
+              onDelete={handleRecipeDelete}
+              onCardClick={handleCardClick}
+              isSelected={selectedRecipeId === recipe.id}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
 
-export default RecipesList;
+export default RecipeList;

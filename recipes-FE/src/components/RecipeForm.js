@@ -37,8 +37,8 @@ function RecipeForm({ onSubmit }) {
   };
 
   return (
-    <div>
-      <h2>Add New Recipe</h2>
+    <div className={styles.formContainer}>
+      <h2 className={styles.heading}>Add New Recipe</h2>
       <form onSubmit={handleSubmit} className={styles.form}>
         <div className={styles.inputGroup}>
           <label className={styles.label}>Title</label>

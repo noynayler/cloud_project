@@ -1,20 +1,55 @@
 .card {
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 1rem;
-    margin: 1rem;
-    width: 300px; /* or flex-basis for responsive grids */
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+  max-width: 300px;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.card:hover {
+  transform: translateY(-10px);
 }
 
 .title {
-    font-size: 1.5rem;
-    color: #333;
-    margin-bottom: 0.5rem;
+  font-size: 1.25em;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.photo {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+.deleteButton {
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  float: right;
+}
+
+.deleteButton:hover {
+  background-color: #ff3333;
+}
+
+.recipeDetails {
+  display: none;
+}
+
+.card:hover .recipeDetails {
+  display: block;
 }
 
 .ingredients,
 .directions {
-    font-size: 0.9rem;
-    color: #666;
+  margin-top: 8px;
+  color: #555;
 }
