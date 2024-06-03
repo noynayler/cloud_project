@@ -14,6 +14,9 @@ function RecipeCard({ recipe, onDelete }) {
       <h3 className={styles.title}>{recipe.title}</h3>
       <p className={styles.ingredients}>{recipe.ingredients}</p>
       <p className={styles.directions}>{recipe.directions}</p>
+      {recipe.photoUrl && (
+        <img src={recipe.photoUrl} alt={recipe.title} className={styles.photo} />
+      )}
       <button onClick={handleDelete}>Delete</button>
     </div>
   );
