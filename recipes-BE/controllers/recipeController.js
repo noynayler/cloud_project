@@ -1,4 +1,4 @@
-const AWS = require('aws-sdk');
+ const AWS = require('aws-sdk');
 const Recipe = require('../models/Recipe');
 require('dotenv').config();
 
@@ -129,28 +129,21 @@ exports.updateRecipe = async (req, res) => {
 };
 
 exports.deleteRecipe = async (req, res) => {
-  console.log(`Received DELETE request for recipe ID: ${req.params.id}`);
+  const recipeId = req.params.id;
+
+  console.log(`Received DELETE request for recipe ID: ${recipeId}`);
   try {
-    const recipe = await Recipe.findByPk(req.params.id);
+    const recipe = await Recipe.findByPk(recipeId);
     if (!recipe) {
-      console.log(`No recipe found with ID: ${req.params.id}`);
-      return res.status(404).send({ message: "Recipe not found" });
+      console.log(`No recipe found with ID: ${recipeId}`);
+      return res.status(404).json({ message: 'Recipe not found' });
     }
 
-    if (recipe.photoUrl) {
-      await deleteFileFromS3(recipe.photoUrl);
-    }
-
-    const result = await Recipe.destroy({ where: { id: req.params.id } });
-    if (result > 0) {
-      console.log(`Recipe with ID ${req.params.id} deleted successfully.`);
-      res.status(204).send();
-    } else {
-      console.log(`Failed to delete recipe with ID: ${req.params.id}`);
-      res.status(500).send({ message: "Failed to delete recipe" });
-    }
+    await Recipe.destroy({ where: { id: recipeId } });
+    console.log(`Recipe with ID ${recipeId} deleted successfully.`);
+    res.status(204).send(); // No Content
   } catch (error) {
     console.error('Error during deletion:', error);
-    res.status(500).send({ message: "Server error" });
+    res.status(500).send({ message: 'Server error' });
   }
 };

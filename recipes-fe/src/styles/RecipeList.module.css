@@ -1,0 +1,40 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+}
+
+.recipeGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  width: 100%;
+  max-width: 1200px;
+}
+
+.addNewCard {
+  background-color: #4caf50; /* Green background color */
+  color: white; /* White text color */
+  border: none; /* Remove border */
+  padding: 20px;
+  margin-bottom: 20px;
+  width: 300px;
+  text-align: center;
+  cursor: pointer;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border-radius: 8px; /* Add rounded corners */
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.addNewCard:hover {
+  background-color: #45a049; /* Slightly darker green on hover */
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+.addNewCard:active {
+  background-color: #3d8e42; /* Even darker green when active */
+}

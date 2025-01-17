@@ -6,7 +6,40 @@
   <component name="ChangeListManager">
     <list default="true" id="5e64d34f-8481-4368-b9c8-5590490d1e3f" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cloud_project.iml" beforeDir="false" afterPath="$PROJECT_DIR$/cloud_project.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/recipes-BE/.env" beforeDir="false" afterPath="$PROJECT_DIR$/recipes-BE/.env" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/recipes-BE/config/dbConfig.js" beforeDir="false" afterPath="$PROJECT_DIR$/recipes-BE/config/dbConfig.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/recipes-BE/controllers/recipeController.js" beforeDir="false" afterPath="$PROJECT_DIR$/recipes-BE/controllers/recipeController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/recipes-FE/.env" beforeDir="false" afterPath="$PROJECT_DIR$/readme.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/recipes-FE/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recipes-FE/build/asset-manifest.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recipes-FE/build/favicon.ico" beforeDir="false" afterPath="$PROJECT_DIR$/recipes-fe/public/favicon.ico" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/recipes-FE/build/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recipes-FE/build/static/css/main.988cc761.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recipes-FE/build/static/css/main.988cc761.css.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recipes-FE/build/static/js/main.9fdf43c8.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recipes-FE/build/static/js/main.9fdf43c8.js.LICENSE.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recipes-FE/build/static/js/main.9fdf43c8.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recipes-FE/package-lock.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recipes-FE/package.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recipes-FE/public/favicon.ico" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recipes-FE/public/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recipes-FE/src/App.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recipes-FE/src/api/recipesApi.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recipes-FE/src/components/CompactRecipeCard.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recipes-FE/src/components/ExpandedRecipeCard.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recipes-FE/src/components/Navbar.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recipes-FE/src/components/RecipeCard.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recipes-FE/src/components/RecipeForm.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recipes-FE/src/containers/RecipeDetails.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recipes-FE/src/containers/RecipesList.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recipes-FE/src/index.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recipes-FE/src/styles/App.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recipes-FE/src/styles/Navbar.module.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recipes-FE/src/styles/RecipeCard.module.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recipes-FE/src/styles/RecipeForm.module.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recipes-FE/src/styles/RecipeList.module.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recipes-FE/src/styles/index.css" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -16,26 +49,24 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "history": [
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;history&quot;: [
     {
-      "state": "OPEN",
-      "author": "noynayler"
+      &quot;state&quot;: &quot;OPEN&quot;,
+      &quot;author&quot;: &quot;noynayler&quot;
     }
   ],
-  "lastFilter": {
-    "state": "OPEN",
-    "author": "noynayler"
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;author&quot;: &quot;noynayler&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings">
-    <option name="selectedUrlAndAccountId">
-      <UrlAndAccount>
-        <option name="accountId" value="e2918d71-27bd-4ed9-a650-0e4c3e4b3864" />
-        <option name="url" value="https://github.com/noynayler/cloud_project.git" />
-      </UrlAndAccount>
-    </option>
-  </component>
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/noynayler/cloud_project.git&quot;,
+    &quot;accountId&quot;: &quot;98d8b52b-fcd2-4bf7-9194-4cb3ee84d765&quot;
+  }
+}</component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
@@ -55,23 +86,21 @@
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "<unknown>",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "master",
     "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/noyn/IdeaProjects/cloud_project/recipes-fe/public",
     "settings.editor.selected.configurable": "org.jetbrains.plugins.github.ui.GithubSettingsConfigurable"
   }
 }]]></component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\noyn\IdeaProjects\cloud_project\recipes-fe\public" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\noyn\IdeaProjects\demo3\cloud_project\terraform" />
       <recent name="C:\Users\noyn\IdeaProjects\demo3\cloud_project\recipes-FE\public" />
     </key>
-  </component>
-  <component name="SharedIndexes">
-    <attachedChunks>
-      <set>
-        <option value="jdk-22-openjdk-22-3183f394aec4-bad0321e" />
-      </set>
-    </attachedChunks>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
