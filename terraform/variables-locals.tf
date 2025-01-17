@@ -1,14 +1,12 @@
 locals {
   common_tags = {
-    owner = "Noy"
+    owner = "YourName" # Replace with a placeholder or leave as is
     usage = "project"
   }
-  vpc_name       = "cloud-project"  # a name to our VPC
-  cidr           = "10.10.0.0/16" # the IP range for our whole VPC
-  public_subnets = ["10.10.0.0/20", "10.10.16.0/20"] # to have 3 subnets we created 3 IP ranges for 3 AZs
+  vpc_name       = "cloud-project"  # A name for the VPC
+  cidr           = "10.10.0.0/16"   # The IP range for the VPC
+  public_subnets = ["10.10.0.0/20", "10.10.16.0/20"] # IP ranges for public subnets
 
-  ec2_key_name="test"
-  app_ami="ami-01e4af9773d607b48"
-  instance_type="t2.micro"
-
-}
+  ec2_key_name   = "YOUR_KEY_NAME"  # Replace with a placeholder (e.g., "<YOUR_KEY_NAME>")
+  app_ami        = "ami-<PLACEHOLDER>" # Replace with a placeholder or describe in README
+  instance_type  = "t2.micro"       # Generalized instance type
