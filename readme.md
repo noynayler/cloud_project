@@ -174,7 +174,11 @@ Ensure you have the following installed:
    terraform apply
    ```
 
-4. **Verify Resources:** Ensure that the AWS RDS instance, S3 bucket, and other resources are created successfully.
+4. **Delete the EC2:**
+   ```bash
+   terraform destroy
+
+   ```
 
 ---
 
