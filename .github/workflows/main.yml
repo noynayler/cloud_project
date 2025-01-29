@@ -1,0 +1,41 @@
+name: Update EC2 with Latest Changes
+
+on:
+  push:
+    branches:
+      - main # Trigger on changes to the main branch
+
+jobs:
+  update-ec2:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repository (for reference)
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      # SSH into EC2 and update the code
+      - name: Update EC2 Instance
+        uses: appleboy/ssh-action@v0.1.5
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          port: 22
+          script: |
+            # Navigate to the project directory
+            cd /home/ubuntu/cloud_project
+
+            # Pull the latest changes
+            git pull origin main
+
+            # Backend updates
+            cd recipes-BE
+            npm install
+            pm2 restart backend
+
+            # Frontend updates
+            cd ../recipes-FE
+            npm install
+            npm run build
+            pm2 restart frontend
