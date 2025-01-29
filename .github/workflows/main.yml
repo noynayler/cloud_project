@@ -10,9 +10,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout the repository (for reference)
       - name: Checkout Code
         uses: actions/checkout@v2
+        
+      - name: Set Up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Install Bandit
+        run: pip install bandit
+      
+      - name: Run Bandit Scan
+        run: bandit -r . -f json -o bandit-report.json
 
       # SSH into EC2 and update the code
       - name: Update EC2 Instance
@@ -23,10 +33,8 @@ jobs:
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           port: 22
           script: |
-            # Navigate to the project directory
             cd /opt/cloud_project
 
-            # Pull the latest changes
             git pull origin main
 
             # Backend updates
