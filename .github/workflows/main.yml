@@ -3,7 +3,7 @@ name: Update EC2 with Latest Changes
 on:
   push:
     branches:
-      - main # Trigger on changes to the main branch
+      - main 
 
 jobs:
   update-ec2:
@@ -24,7 +24,7 @@ jobs:
           port: 22
           script: |
             # Navigate to the project directory
-            cd /home/ubuntu/cloud_project
+            cd /opt/cloud_project
 
             # Pull the latest changes
             git pull origin main
