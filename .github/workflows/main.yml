@@ -1,27 +1,36 @@
+name: CI/CD Pipeline
 
-name: CI
-
-on: [push]
+on:
+  push:
+    branches:
+      - main
 
 jobs:
-  sast_scan:
-    name: Run Bandit Scan
+  terraform-deploy:
+    name: Terraform EC2 Deployment
     runs-on: ubuntu-latest
 
     steps:
-    - name: checkout code
+    - name: Checkout Code
       uses: actions/checkout@v2
 
-    - name: Set Python
-      uses: actions/setup-python@v2
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
       with:
-        python-version: 3.8
-        
-    - name: install Bandit
-      run: pip install bandit
-      
-    - name: Run bandit Scan
-      run: bandit -r . -f json -o bandit_report.json
+        terraform_version: 1.4.0
+
+    - name: Terraform Init
+      run: terraform init
+
+    - name: Terraform Plan
+      run: terraform plan
+
+    - name: Terraform Apply
+      run: terraform apply -auto-approve
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
 
       
   
