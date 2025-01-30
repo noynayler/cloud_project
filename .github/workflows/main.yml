@@ -1,4 +1,4 @@
-name: Update EC2 with Latest Changes
+name: Bendit Scan and Image Scan
 
 on: [push]
     
