@@ -2,7 +2,7 @@
 FROM node:18 AS backend
 
 # Set working directory
-WORKDIR /Recipes_Kubernetes/recipes-BE
+WORKDIR /cloud_project/recipes-BE
 
 # Copy backend code
 COPY recipes-BE/ .
@@ -17,7 +17,7 @@ EXPOSE 5000
 FROM node:18 AS frontend
 
 # Set working directory
-WORKDIR /Recipes_Kubernetes/recipes-fe
+WORKDIR /cloud_project/recipes-fe
 
 # Copy frontend code
 COPY recipes-fe/ .
@@ -29,11 +29,11 @@ RUN npm install && npm run build
 FROM node:18
 
 # Set working directory
-WORKDIR /Recipes_Kubernetes
+WORKDIR /cloud_project
 
 # Copy built frontend and backend
-COPY --from=backend /Recipes_Kubernetes/recipes-BE recipes-BE
-COPY --from=frontend /Recipes_Kubernetes/recipes-fe/build recipes-fe/build
+COPY --from=backend /cloud_project/recipes-BE recipes-BE
+COPY --from=frontend /cloud_project/recipes-fe/build recipes-fe/build
 
 # serving frontend
 RUN npm install -g serve
