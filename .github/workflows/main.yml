@@ -21,9 +21,10 @@ jobs:
       - name: Run Bandit Scan
         run: bandit -r . -f json -o bandit-report.json
 
-  image_scan: 
+  image_scan:  
     - name: Build Image and run image scan
       runs-on: ubuntu-latest
+      
       steps:
         - name: Checkout Code
           uses: actions/checkout@v2
@@ -36,30 +37,31 @@ jobs:
           run: |
             curl -fsSL https://raw.githubusercontent.com/docker/scout-cli/main/install.sh -o install-scout.sh
             sh install-scout.sh
+            echo ${{secrets.DOCKER_PWD}} | docker login -u ${{secrets.DOCKER_USER}} --password-stin
             docker scout quickview
             docker scout cves
           
     
-      # SSH into EC2 and update the code
-      - name: Update EC2 Instance
-        uses: appleboy/ssh-action@v0.1.5
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_PRIVATE_KEY }}
-          port: 22
-          script: |
-            cd /opt/cloud_project
+      # # SSH into EC2 and update the code
+      # - name: Update EC2 Instance
+      #   uses: appleboy/ssh-action@v0.1.5
+      #   with:
+      #     host: ${{ secrets.EC2_HOST }}
+      #     username: ${{ secrets.EC2_USERNAME }}
+      #     key: ${{ secrets.EC2_PRIVATE_KEY }}
+      #     port: 22
+      #     script: |
+      #       cd /opt/cloud_project
 
-            git pull origin main
+      #       git pull origin main
 
-            # Backend updates
-            cd recipes-BE
-            npm install
-            pm2 restart backend
+      #       # Backend updates
+      #       cd recipes-BE
+      #       npm install
+      #       pm2 restart backend
 
-            # Frontend updates
-            cd ../recipes-FE
-            npm install
-            npm run build
-            pm2 restart frontend
+      #       # Frontend updates
+      #       cd ../recipes-FE
+      #       npm install
+      #       npm run build
+      #       pm2 restart frontend
