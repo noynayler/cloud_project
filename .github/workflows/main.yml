@@ -41,6 +41,7 @@ jobs:
                 docker scout quickview
                 docker scout cves
               
+
     
       # # SSH into EC2 and update the code
       # - name: Update EC2 Instance
