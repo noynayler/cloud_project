@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloud-recipes-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: cloud-recipes-app
+  template:
+    metadata:
+      labels:
+        app: cloud-recipes-app
+    spec:
+      containers:
+        - name: backend
+          image: noya39/cloud-recipes-app:latest  # Update with your image
+          ports:
+            - containerPort: 5000
+        - name: frontend
+          image: noya39/cloud-recipes-app:latest  # Update with your image
+          ports:
+            - containerPort: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cloud-recipes-service
+spec:
+  selector:
+    app: cloud-recipes-app
+  ports:
+    - name: backend
+      protocol: TCP
+      port: 5000
+      targetPort: 5000
+    - name: frontend
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
+  type: NodePort  # Change to LoadBalancer if using AWS LoadBalancer
