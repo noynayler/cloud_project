@@ -1,5 +1,5 @@
 # Stage 1: Backend Setup
-FROM node:18 AS backend
+FROM node:20 AS backend
 
 # Set working directory
 WORKDIR /cloud_project/recipes-BE
