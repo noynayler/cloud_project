@@ -32,6 +32,7 @@ jobs:
           path: eslint-report.txt
           
       - name: Run Tests
+        working-directory: ./recipes-BE
         run: npx jest --verbose --ci
 
   image_scan:
