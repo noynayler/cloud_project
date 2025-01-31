@@ -48,6 +48,9 @@ jobs:
             - name: Build Docker Image
               run: docker build -t ${{ secrets.DOCKER_USER }}/myapp:latest -f Dockerfile .
               
+            - name: Clean Docker Scout Cache
+              run: sudo rm -rf /tmp/docker-scout 
+              
             - name: Install Docker Scout and Run Scan
               uses: docker/scout-action@v1.0.9
               with:
