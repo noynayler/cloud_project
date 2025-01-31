@@ -29,15 +29,15 @@ jobs:
         steps:
             - name: Checkout Code
               uses: actions/checkout@v2
-
-            - name: Set Up Docker
-              uses: docker-practice/actions-setup-docker@v1
-
             - name: Ensure daemon.json Exists
               run: |
                   if [ ! -f /etc/docker/daemon.json ]; then
                     echo '{}' | sudo tee /etc/docker/daemon.json > /dev/null
                   fi
+            - name: Set Up Docker
+              uses: docker-practice/actions-setup-docker@v1
+
+            
 
                 
             - name: Build Docker
