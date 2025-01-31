@@ -20,8 +20,8 @@ jobs:
         run: pip install bandit
       
       - name: Run Bandit Scan
-        run: bandit -ll -ii -r . -f json -o bandit-report.json
-
+        run: bandit -r . -f json -o bandit-report.json
+        
       - name: Upload Bandit Report
         uses: actions/upload-artifact@v4
         if: always()
@@ -44,22 +44,20 @@ jobs:
             - name: Set Up Docker
               uses: docker-practice/actions-setup-docker@v1
 
-                
-            - name: Build Docker Image
-              run:  docker build -f Dockerfile -t myapp:latest .
-              
             
+
+                
+            - name: Build Docker
+              run: docker build -f Dockerfile -t myapp:latest .
               
             - name: Install Docker Scout and Run Scan
-              uses: docker/scout-action@v1.1.0
-              with:
-                  dockerhub-user: ${{secrets.DOCKER_USER}}
-                  dockerhub-password: ${{secrets.DOCKER_PWD}}
-                  command: quickview, cves
-                  only-severities: critical, high
-                  sarif-file: scout-report.sarif
-             
-                  
+              run: |
+                curl -fsSL https://raw.githubusercontent.com/docker/scout-cli/main/install.sh -o install-scout.sh
+                sh install-scout.sh
+                echo ${{secrets.DOCKER_PWD}} | docker login -u ${{secrets.DOCKER_USER}} --password-stdin
+                docker scout quickview
+                docker scout cves
+
             - name: Upload Scout Report
               uses: actions/upload-artifact@v4
               if: always()
@@ -75,6 +73,85 @@ jobs:
             
             - name: Push Docker Image to Docker Hub
               run: docker push ${{ secrets.DOCKER_USER }}/myapp:latest
+
+
+# name: Bendit Scan and Image Scan
+
+# on: [push]
+    
+# jobs:
+#   sast_scan:
+#     name: Run Bandit Scan
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - name: Checkout Code
+#         uses: actions/checkout@v2
+        
+#       - name: Set Up Python
+#         uses: actions/setup-python@v2
+#         with:
+#           python-version: 3.8
+
+#       - name: Install Bandit
+#         run: pip install bandit
+      
+#       - name: Run Bandit Scan
+#         run: bandit -ll -ii -r . -f json -o bandit-report.json
+
+#       - name: Upload Bandit Report
+#         uses: actions/upload-artifact@v4
+#         if: always()
+#         with:
+#               name: bandit-report
+#               path: bandit-report.json
+
+#   image_scan:
+#         name: Build Image and Run Image Scan
+#         runs-on: ubuntu-latest
+      
+#         steps:
+#             - name: Checkout Code
+#               uses: actions/checkout@v2
+#             - name: Ensure daemon.json Exists
+#               run: |
+#                   if [ ! -f /etc/docker/daemon.json ]; then
+#                     echo '{}' | sudo tee /etc/docker/daemon.json > /dev/null
+#                   fi
+#             - name: Set Up Docker
+#               uses: docker-practice/actions-setup-docker@v1
+
+                
+#             - name: Build Docker Image
+#               run:  docker build -f Dockerfile -t myapp:latest .
+              
+            
+              
+#             - name: Install Docker Scout and Run Scan
+#               uses: docker/scout-action@v1.1.0
+#               with:
+#                   dockerhub-user: ${{secrets.DOCKER_USER}}
+#                   dockerhub-password: ${{secrets.DOCKER_PWD}}
+#                   command: quickview, cves
+#                   only-severities: critical, high
+#                   sarif-file: scout-report.sarif
+             
+                  
+#             - name: Upload Scout Report
+#               uses: actions/upload-artifact@v4
+#               if: always()
+#               with: 
+#                   name: docker-scout-finding
+#                   path: scout-report.sarif
+                  
+#             -  name: Tag Docker Image
+#                run: docker tag myapp:latest ${{ secrets.DOCKER_USER }}/myapp:latest
+              
+#             - name: Login to Docker Hub
+#               run: echo ${{ secrets.DOCKER_PWD }} | docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
+            
+#             - name: Push Docker Image to Docker Hub
+#               run: docker push ${{ secrets.DOCKER_USER }}/myapp:latest
               
               
 
