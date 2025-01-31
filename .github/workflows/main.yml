@@ -30,7 +30,9 @@ jobs:
         with:
           name: eslint-report
           path: eslint-report.txt
-
+          
+      - name: Run Tests
+        run: npx jest --verbose --ci
 
   image_scan:
         name: Build Image and Run Image Scan
