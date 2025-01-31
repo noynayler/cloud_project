@@ -52,13 +52,16 @@ jobs:
               run: sudo rm -rf /tmp/docker-scout 
               
             - name: Install Docker Scout and Run Scan
-              uses: docker/scout-action@v1.0.9
+              uses: docker/scout-action@v1.1.0
               with:
                   dockerhub-user: ${{secrets.DOCKER_USER}}
                   dockerhub-password: ${{secrets.DOCKER_PWD}}
                   command: quickview, cves
                   only-severities: critical, high
                   sarif-file: scout-report.sarif
+              env:
+                  SCOUT_TEMP_DIR: /tmp/custom-scout-dir
+                  
             - name: Upload Scout Report
               uses: actions/upload-artifact@v4
               if: always()
