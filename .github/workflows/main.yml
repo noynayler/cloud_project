@@ -30,6 +30,15 @@ jobs:
         with:
           name: eslint-report
           path: eslint-report.txt
+
+      - name: Set Environment Variables
+        run: |
+            echo "DB_NAME=${{ secrets.DB_NAME }}" >> $GITHUB_ENV
+            echo "DB_USER=${{ secrets.DB_USER }}" >> $GITHUB_ENV
+            echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> $GITHUB_ENV
+            echo "DB_HOST=127.0.0.1" >> $GITHUB_ENV
+            echo "DB_PORT=3306" >> $GITHUB_ENV
+            
           
       - name: Run Tests
         working-directory: ./recipes-BE
