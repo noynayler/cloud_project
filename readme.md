@@ -30,15 +30,30 @@ This project is a **Recipes Book** web application that allows users to manage r
 - **RDS**: MySQL database for data persistence.
 - **S3**: For storing recipe photos.
 
-🧩 **Terraform**: Infrastructure as Code (IaC) for provisioning AWS resources.
+---
 
-🚀 Auto Scaling Group for high availability.
+## CI/CD Pipeline
 
-🌐 Application Load Balancer for traffic distribution.
+### Steps Included in the Pipeline
 
-🔒 Secure and modular infrastructure.
+1. **Linting**:
+   - ESLint checks for code quality and formatting issues.
+
+2. **Unit Testing**:
+   - Jest tests simulate frontend and backend functionality.
+
+3. **Docker Image Creation**:
+   - A Docker image is built and tagged from the backend source code.
+
+4. **Image Push to Docker Hub**:
+   - Built Docker images are pushed to Docker Hub for storage and deployment.
+
+5. **Production Deployment**:
+   - Images are deployed to an AWS EC2 instance using SSH and Docker CLI.
 
 ---
+
+
 
 ## Project Structure
 
@@ -84,11 +99,9 @@ cloud_project/
 ### Prerequisites
 
 Ensure you have the following installed:
-
 - **Node.js** (v16 or higher)
-- **MySQL** (or AWS RDS instance)
+- **MySQL** (or an AWS RDS instance)
 - **AWS CLI** (for configuring S3)
-- **Terraform** (v1.0 or higher)
 
 ---
 
@@ -96,20 +109,17 @@ Ensure you have the following installed:
 
 #### Backend Setup
 
-1. **Navigate to Backend Directory:**
-
+1. **Navigate to Backend Directory**:
    ```bash
    cd recipes-BE
    ```
 
-2. **Install Dependencies:**
-
+2. **Install Dependencies**:
    ```bash
    npm install
    ```
 
-3. **Set Environment Variables:** Create a `.env` file in `recipes-BE/` with the following:
-
+3. **Set Environment Variables**: Create a `.env` file in the `recipes-BE/` directory with the following:
    ```env
    PORT=3001
    DB_HOST=<your_database_host>
@@ -121,70 +131,59 @@ Ensure you have the following installed:
    AWS_REGION=<your_aws_region>
    ```
 
-4. **Run the Backend:**
-
+4. **Run the Backend**:
    ```bash
    npm start
    ```
 
 #### Frontend Setup
 
-1. **Navigate to Frontend Directory:**
-
+1. **Navigate to Frontend Directory**:
    ```bash
    cd recipes-FE
    ```
 
-2. **Install Dependencies:**
-
+2. **Install Dependencies**:
    ```bash
    npm install
    ```
 
-3. **Set Environment Variables:** Create a `.env` file in `recipes-FE/` with the following:
-
+3. **Set Environment Variables**: Create a `.env` file in the `recipes-FE/` directory with the following:
    ```env
    REACT_APP_API_BASE_URL=http://localhost:3001/recipesBook
    ```
 
-4. **Run the Frontend:**
-
+4. **Run the Frontend**:
    ```bash
    npm start
    ```
 
-#### Infrastructure Setup
+---
 
-1. **Navigate to Terraform Directory:**
+## CI/CD Pipeline
 
-   ```bash
-   cd terraform
-   ```
+### Steps Included in the Pipeline
 
-2. **Initialize Terraform:**
+1. **Linting**:
+   - ESLint checks for code quality and formatting issues.
 
-   ```bash
-   terraform init
-   ```
+2. **Unit Testing**:
+   - Jest tests simulate frontend and backend functionality.
 
-3. **Review and Apply Terraform Configuration:**
+3. **Docker Image Creation**:
+   - A Docker image is built and tagged from the backend source code.
 
-   ```bash
-   terraform plan
-   terraform apply
-   ```
+4. **Image Push to Docker Hub**:
+   - Built Docker images are pushed to Docker Hub for storage and deployment.
 
-4. **Delete the EC2:**
-   ```bash
-   terraform destroy
-
-   ```
+5. **Production Deployment**:
+   - Images are deployed to an AWS EC2 instance using SSH and Docker CLI.
 
 ---
 
 ## API Endpoints
 
-### Recipe Endpoints
+### Recipe Management
 
 | Method | Endpoint           | Description               |
 | ------ | ------------------ | ------------------------- |
@@ -194,55 +193,21 @@ Ensure you have the following installed:
 | PUT    | `/recipesBook/:id` | Update an existing recipe |
 | DELETE | `/recipesBook/:id` | Delete a recipe           |
 
-### AWS S3 Integration
-
-- Photos are uploaded to S3 and the URL is stored in the database.
-
 ---
 
-[//]: # ()
-[//]: # (## Technologies Used)
+## Deployment Overview
 
-[//]: # ()
-[//]: # (### Frontend)
-
-[//]: # ()
-[//]: # (- React-based UI for managing recipes.)
-
-[//]: # (- **React Router**: For navigation.)
-
-[//]: # (- **Axios**: For HTTP requests.)
-
-[//]: # ()
-[//]: # (### Backend)
-
-[//]: # ()
-[//]: # (- **Node.js**: JavaScript runtime.)
-
-[//]: # (- **Express**: Web framework.)
-
-[//]: # (- **Sequelize**: ORM for MySQL.)
-
-[//]: # (- **AWS SDK**: For S3 integration.)
-
-[//]: # ()
-[//]: # (### Database)
-
-[//]: # ()
-[//]: # ( - **MySQL** hosted on AWS RDS.)
-
-[//]: # ()
-[//]: # (### Infrastructure)
-
-[//]: # (- AWS infrastructure provisioned with Terraform.)
-
-[//]: # ()
-[//]: # (- **AWS S3**: For storing images.)
-
-[//]: # (- **Terraform**: Infrastructure as Code.)
+The application follows a streamlined deployment process:
+1. **Code Push**:
+   - Developers push code changes to the GitHub repository.
+2. **Continuous Integration**:
+   - GitHub Actions run linting, testing, and build jobs.
+3. **Image Deployment**:
+   - Docker images are built and pushed to Docker Hub.
+4. **Production Deployment**:
+   - Images are deployed to an AWS EC2 instance.
 
 ---
-
 
 
 
