@@ -54,7 +54,13 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
-
+        
+      - name: Ensure daemon.json Exists
+        run: |
+              if [ ! -f /etc/docker/daemon.json ]; then
+                echo '{}' | sudo tee /etc/docker/daemon.json > /dev/null
+              fi
+              
       - name: Extract Version Information
         run: |
             VERSION=$(date +'%Y%m%d')-$(git rev-parse --short HEAD)
