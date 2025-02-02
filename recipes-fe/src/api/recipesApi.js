@@ -2,11 +2,18 @@ import axios from 'axios';
 
 let apiEndpoint;
 
-if (window.location.hostname.includes('amazonaws.com')) {
-  apiEndpoint = `${window.location.href}recipesBook/`;
-} else {
+// if (window.location.hostname.includes('amazonaws.com')) {
+//   apiEndpoint = `${window.location.href}recipesBook/`;
+// } else {
+//   apiEndpoint = 'http://localhost:3001/recipesBook';
+// }
+
+if (window.location.hostname.includes('localhost')) {
   apiEndpoint = 'http://localhost:3001/recipesBook';
+} else {
+  apiEndpoint = `${window.location.href}recipesBook/`;
 }
+
 export const fetchRecipes = () => axios.get(apiEndpoint);
 export const fetchRecipe = id => axios.get(`${apiEndpoint}/${id}`);
 export const createRecipe = recipe => axios.post(apiEndpoint, recipe);
