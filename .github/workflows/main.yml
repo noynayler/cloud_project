@@ -102,7 +102,7 @@ jobs:
   deploy:
     name: Deploy to EC2
     runs-on: ubuntu-latest
-    # needs: image_scan  
+    needs: image_scan  
 
     steps:
       - name: Checkout Code
