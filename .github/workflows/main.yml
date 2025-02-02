@@ -72,22 +72,24 @@ jobs:
 
       - name: Build Docker Image with Version Tag
         run: |
-             docker build -f Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/myapp:${{ env.DOCKER_IMAGE_VERSION }} -t ${{ secrets.DOCKER_USERNAME }}/myapp:latest .
+             docker build -f Dockerfile -t ${{ secrets.DOCKER_USER }}/myapp:${{ env.DOCKER_IMAGE_VERSION }} -t ${{ secrets.DOCKER_USER }}/myapp:latest .
 
       - name: Install Docker Scout and Run Scan
         run: |
           curl -fsSL https://raw.githubusercontent.com/docker/scout-cli/main/install.sh -o install-scout.sh
           sh install-scout.sh
           echo ${{ secrets.DOCKER_PWD }} | docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
-          docker scout quickview --output scout-report.sarif
-          docker scout cves --output scout-report.sarif
+          docker scout quickview ${{ secrets.DOCKER_USERNAME }}/myapp:${{ env.DOCKER_IMAGE_VERSION }} --output quickview-report.sarif
+          docker scout cves ${{ secrets.DOCKER_USERNAME }}/myapp:${{ env.DOCKER_IMAGE_VERSION }} --output cves-report.sarif
 
-      - name: Upload Scout Report
+      - name: Upload Scout Reports
         uses: actions/upload-artifact@v4
         if: always()
         with: 
             name: docker-scout-finding
-            path: scout-report.sarif
+            path: |
+                  quickview-report.sarif
+                  cves-report.sarif
 
       # - name: Tag Docker Image with Version
       #   run: |
