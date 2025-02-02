@@ -122,7 +122,7 @@ jobs:
             # Ensure the container exists before stopping/removing it
             docker ps -q --filter "name=myapp" | grep -q . && docker stop myapp || echo "No container to stop"
             docker ps -aq --filter "name=myapp" | grep -q . && docker rm myapp || echo "No container to remove"
-            docker run -d --name myapp -p 80:5000 ${{ secrets.DOCKER_USER }}/myapp:latest
+            docker run -d --name myapp -p 80:3000 -p 3001:3001 ${{ secrets.DOCKER_USER }}/myapp:latest
             EOF
             
   security_scan:
