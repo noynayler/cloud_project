@@ -67,36 +67,41 @@ jobs:
             VERSION=$(date +'%Y%m%d')-$(git rev-parse --short HEAD)
             echo "DOCKER_IMAGE_VERSION=$VERSION" >> $GITHUB_ENV
 
-      - name: Login to Docker Hub
-        run: |
-            echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+      - name: Set Up Docker
+        uses: docker-practice/actions-setup-docker@v1
 
       - name: Build Docker Image with Version Tag
         run: |
-            docker build -f Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/myapp:${{ env.DOCKER_IMAGE_VERSION }} -t ${{ secrets.DOCKER_USERNAME }}/myapp:latest .
+             docker build -f Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/myapp:${{ env.DOCKER_IMAGE_VERSION }} -t ${{ secrets.DOCKER_USERNAME }}/myapp:latest .
 
       - name: Install Docker Scout and Run Scan
         run: |
-            curl -fsSL https://raw.githubusercontent.com/docker/scout-cli/main/install.sh -o install-scout.sh
-            sh install-scout.sh
-            docker scout cves -o scout-report.sarif ${{ secrets.DOCKER_USERNAME }}/myapp:latest
+          curl -fsSL https://raw.githubusercontent.com/docker/scout-cli/main/install.sh -o install-scout.sh
+          sh install-scout.sh
+          echo ${{ secrets.DOCKER_PWD }} | docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
+          docker scout quickview --output scout-report.sarif
+          docker scout cves --output scout-report.sarif
 
       - name: Upload Scout Report
         uses: actions/upload-artifact@v4
         if: always()
         with: 
-            name: docker-scout-findings
+            name: docker-scout-finding
             path: scout-report.sarif
 
-      - name: Tag Docker Image
-        run: |
-            docker tag ${{ secrets.DOCKER_USERNAME }}/myapp:latest ${{ secrets.DOCKER_USERNAME }}/myapp:${{ env.DOCKER_IMAGE_VERSION }}
+      # - name: Tag Docker Image with Version
+      #   run: |
+      #       docker tag myapp:latest ${{ secrets.DOCKER_USER }}/myapp:${{ env.DOCKER_IMAGE_VERSION }}
+      #       docker tag myapp:latest ${{ secrets.DOCKER_USER }}/myapp:latest
+
+      - name: Login to Docker Hub
+        run: echo ${{ secrets.DOCKER_PWD }} | docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
 
       - name: Push Docker Image to Docker Hub
         run: |
-            docker push ${{ secrets.DOCKER_USERNAME }}/myapp:${{ env.DOCKER_IMAGE_VERSION }}
-            docker push ${{ secrets.DOCKER_USERNAME }}/myapp:latest
-
+            docker push ${{ secrets.DOCKER_USER }}/myapp:${{ env.DOCKER_IMAGE_VERSION }}
+            docker push ${{ secrets.DOCKER_USER }}/myapp:latest
+            
   deploy:
     name: Deploy to EC2
     runs-on: ubuntu-latest
