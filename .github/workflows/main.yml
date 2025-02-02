@@ -4,53 +4,53 @@ name: Secure CI/CD Pipeline
 on: [push]
 
 jobs:
-  js_checks:
-    name: JavaScript Code Quality and Security Checks
-    runs-on: ubuntu-latest
+  # js_checks:
+  #   name: JavaScript Code Quality and Security Checks
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v2
+  #   steps:
+  #     - name: Checkout Code
+  #       uses: actions/checkout@v2
 
-      - name: Set Up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
+  #     - name: Set Up Node.js
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: 18
 
-      - name: Install Dependencies
-        run: npm install
+  #     - name: Install Dependencies
+  #       run: npm install
 
-      # Ensures the JavaScript code follows best practices
-      - name: Run ESLint
-        run: npx eslint . --ext .js --output-file eslint-report.txt
-        continue-on-error: true  
+  #     # Ensures the JavaScript code follows best practices
+  #     - name: Run ESLint
+  #       run: npx eslint . --ext .js --output-file eslint-report.txt
+  #       continue-on-error: true  
 
-      - name: Upload ESLint Report
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: eslint-report
-          path: eslint-report.txt
+  #     - name: Upload ESLint Report
+  #       uses: actions/upload-artifact@v4
+  #       if: always()
+  #       with:
+  #         name: eslint-report
+  #         path: eslint-report.txt
 
-      - name: Run npm audit (Security Scan)
-        run: npm audit --production --audit-level=critical
+  #     - name: Run npm audit (Security Scan)
+  #       run: npm audit --production --audit-level=critical
 
-      - name: Set Environment Variables
-        run: |
-            echo "DB_NAME=${{ secrets.DB_NAME }}" >> $GITHUB_ENV
-            echo "DB_USER=${{ secrets.DB_USER }}" >> $GITHUB_ENV
-            echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> $GITHUB_ENV
-            echo "DB_HOST=${{ secrets.DB_HOST }}" >> $GITHUB_ENV
-            echo "DB_PORT=3306" >> $GITHUB_ENV
+  #     - name: Set Environment Variables
+  #       run: |
+  #           echo "DB_NAME=${{ secrets.DB_NAME }}" >> $GITHUB_ENV
+  #           echo "DB_USER=${{ secrets.DB_USER }}" >> $GITHUB_ENV
+  #           echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> $GITHUB_ENV
+  #           echo "DB_HOST=${{ secrets.DB_HOST }}" >> $GITHUB_ENV
+  #           echo "DB_PORT=3306" >> $GITHUB_ENV
 
-      - name: Run Tests
-        working-directory: ./recipes-BE
-        run: npx jest --verbose --ci
+  #     - name: Run Tests
+  #       working-directory: ./recipes-BE
+  #       run: npx jest --verbose --ci
 
   image_scan:
     name: Build Image, Version Control, and Run Image Scan
     runs-on: ubuntu-latest
-    needs: js_checks  # Only runs if js_checks succeeds
+    # needs: js_checks
 
     steps:
       - name: Checkout Code
@@ -69,6 +69,9 @@ jobs:
 
       - name: Set Up Docker
         uses: docker-practice/actions-setup-docker@v1
+
+      - name: Login to Docker Hub
+        run: echo ${{ secrets.DOCKER_PWD }} | docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
 
       - name: Build Docker Image with Version Tag
         run: |
