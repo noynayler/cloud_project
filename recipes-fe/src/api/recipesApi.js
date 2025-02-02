@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-let apiEndpoint;
+
 
 // if (window.location.hostname.includes('amazonaws.com')) {
 //   apiEndpoint = `${window.location.href}recipesBook/`;
