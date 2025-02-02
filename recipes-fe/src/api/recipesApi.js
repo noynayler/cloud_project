@@ -8,11 +8,7 @@ let apiEndpoint;
 //   apiEndpoint = 'http://localhost:3001/recipesBook';
 // }
 
-if (window.location.hostname.includes('localhost')) {
-  apiEndpoint = 'http://localhost:3001/recipesBook';
-} else {
-  apiEndpoint = `${window.location.href}recipesBook/`;
-}
+const apiEndpoint = http://18.185.25.51//recipesBook || 'http://localhost:3001/recipesBook';
 
 export const fetchRecipes = () => axios.get(apiEndpoint);
 export const fetchRecipe = id => axios.get(`${apiEndpoint}/${id}`);
