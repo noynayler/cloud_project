@@ -142,7 +142,7 @@ jobs:
           uses: zaproxy/action-baseline@v0.4.0
           with:
             target: 'http://${{ secrets.EC2_HOST }}:5000'
-            docker_name: "owasp/zap2docker-live"
+            docker_name: "owasp/zap2docker-stable"
             report_html: true  # Ensure report is saved as HTML
 
         - name: Upload OWASP ZAP Report
