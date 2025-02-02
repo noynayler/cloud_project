@@ -22,7 +22,7 @@ jobs:
 
       # Ensures the JavaScript code follows best practices
       - name: Run ESLint
-        run: npx eslint . --ext .js --output-file eslint-report.txt
+        run: npx eslint . -c .js --output-file eslint-report.txt
         continue-on-error: true  
 
       - name: Upload ESLint Report
