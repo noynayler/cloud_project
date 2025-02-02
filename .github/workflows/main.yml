@@ -135,8 +135,7 @@ jobs:
         - name: Login to Docker Hub
           run: echo ${{ secrets.DOCKER_PWD }} | docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
 
-        - name: Check Docker Hub Access
-          run: docker pull owasp/zap2docker-live
+       
 
         - name: Run OWASP ZAP Security Scan
           uses: zaproxy/action-baseline@v0.4.0
