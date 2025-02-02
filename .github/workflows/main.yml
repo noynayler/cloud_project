@@ -81,9 +81,8 @@ jobs:
         run: |
           curl -fsSL https://raw.githubusercontent.com/docker/scout-cli/main/install.sh -o install-scout.sh
           sh install-scout.sh
-          echo ${{ secrets.DOCKER_PWD }} | docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
-          docker scout quickview ${{ secrets.DOCKER_USERNAME }}/myapp:${{ env.DOCKER_IMAGE_VERSION }} --output quickview-report.sarif
-          docker scout cves ${{ secrets.DOCKER_USERNAME }}/myapp:${{ env.DOCKER_IMAGE_VERSION }} --output cves-report.sarif
+          docker scout quickview ${{ secrets.DOCKER_USER }}/myapp:${{ env.DOCKER_IMAGE_VERSION }} --output quickview-report.sarif
+          docker scout cves ${{ secrets.DOCKER_USER }}/myapp:${{ env.DOCKER_IMAGE_VERSION }} --output cves-report.sarif
 
       - name: Upload Scout Reports
         uses: actions/upload-artifact@v4
@@ -93,14 +92,7 @@ jobs:
             path: |
                   quickview-report.sarif
                   cves-report.sarif
-
-      # - name: Tag Docker Image with Version
-      #   run: |
-      #       docker tag myapp:latest ${{ secrets.DOCKER_USER }}/myapp:${{ env.DOCKER_IMAGE_VERSION }}
-      #       docker tag myapp:latest ${{ secrets.DOCKER_USER }}/myapp:latest
-
-      - name: Login to Docker Hub
-        run: echo ${{ secrets.DOCKER_PWD }} | docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
+      
 
       - name: Push Docker Image to Docker Hub
         run: |
