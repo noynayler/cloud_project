@@ -101,27 +101,12 @@ jobs:
             docker push ${{ secrets.DOCKER_USER }}/myapp:${{ env.DOCKER_IMAGE_VERSION }}
             docker push ${{ secrets.DOCKER_USER }}/myapp:latest
 
-  security_scan:
-    name: OWASP ZAP Security Scan
-    runs-on: ubuntu-latest
-    needs: image_scan  # Runs only after Docker build succeeds
 
-    steps:
-      - name: Run OWASP ZAP Security Scan
-        uses: zaproxy/action-baseline@v0.4.0
-        with:
-          target: 'http://localhost:5000'
-      
-      - name: Upload OWASP ZAP Report
-        uses: actions/upload-artifact@v4
-        with:
-          name: owasp-zap-report
-          path: owasp_report.html
 
   deploy:
     name: Deploy to EC2
     runs-on: ubuntu-latest
-    needs: security_scan  # Only deploys if security_scan succeeds
+    needs: image_scan  # Only deploys if security_scan succeeds
 
     steps:
       - name: Checkout Code
@@ -140,3 +125,20 @@ jobs:
             docker stop myapp || true && docker rm myapp || true
             docker run -d --name myapp -p 80:5000 ${{ secrets.DOCKER_USER }}/myapp:${{ env.DOCKER_IMAGE_VERSION }}
             EOF
+            
+  security_scan:
+      name: OWASP ZAP Security Scan
+      runs-on: ubuntu-latest
+      needs: deploy  # Runs only after deployment every day.
+  
+      steps:
+        - name: Run OWASP ZAP Security Scan
+          uses: zaproxy/action-baseline@v0.4.0
+          with:
+            target: 'http://${{ secrets.EC2_HOST }}:5000'
+        
+        - name: Upload OWASP ZAP Report
+          uses: actions/upload-artifact@v4
+          with:
+            name: owasp-zap-report
+            path: owasp_report.html
