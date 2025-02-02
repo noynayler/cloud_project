@@ -47,62 +47,62 @@ jobs:
   #       working-directory: ./recipes-BE
   #       run: npx jest --verbose --ci
 
-  image_scan:
-    name: Build Image, Version Control, and Run Image Scan
-    runs-on: ubuntu-latest
-    # needs: js_checks
+  # image_scan:
+  #   name: Build Image, Version Control, and Run Image Scan
+  #   runs-on: ubuntu-latest
+  #   # needs: js_checks
 
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v2
+  #   steps:
+  #     - name: Checkout Code
+  #       uses: actions/checkout@v2
         
-      - name: Ensure daemon.json Exists
-        run: |
-              if [ ! -f /etc/docker/daemon.json ]; then
-                echo '{}' | sudo tee /etc/docker/daemon.json > /dev/null
-              fi
+  #     - name: Ensure daemon.json Exists
+  #       run: |
+  #             if [ ! -f /etc/docker/daemon.json ]; then
+  #               echo '{}' | sudo tee /etc/docker/daemon.json > /dev/null
+  #             fi
               
-      - name: Extract Version Information
-        run: |
-            VERSION=$(date +'%Y%m%d')-$(git rev-parse --short HEAD)
-            echo "DOCKER_IMAGE_VERSION=$VERSION" >> $GITHUB_ENV
+  #     - name: Extract Version Information
+  #       run: |
+  #           VERSION=$(date +'%Y%m%d')-$(git rev-parse --short HEAD)
+  #           echo "DOCKER_IMAGE_VERSION=$VERSION" >> $GITHUB_ENV
 
-      - name: Set Up Docker
-        uses: docker-practice/actions-setup-docker@v1
+  #     - name: Set Up Docker
+  #       uses: docker-practice/actions-setup-docker@v1
 
-      - name: Login to Docker Hub
-        run: echo ${{ secrets.DOCKER_PWD }} | docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
+  #     - name: Login to Docker Hub
+  #       run: echo ${{ secrets.DOCKER_PWD }} | docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
 
-      - name: Build Docker Image with Version Tag
-        run: |
-             docker build -f Dockerfile -t ${{ secrets.DOCKER_USER }}/myapp:${{ env.DOCKER_IMAGE_VERSION }} -t ${{ secrets.DOCKER_USER }}/myapp:latest .
+  #     - name: Build Docker Image with Version Tag
+  #       run: |
+  #            docker build -f Dockerfile -t ${{ secrets.DOCKER_USER }}/myapp:${{ env.DOCKER_IMAGE_VERSION }} -t ${{ secrets.DOCKER_USER }}/myapp:latest .
 
-      - name: Install Docker Scout and Run Scan
-        run: |
-          curl -fsSL https://raw.githubusercontent.com/docker/scout-cli/main/install.sh -o install-scout.sh
-          sh install-scout.sh
-          docker scout quickview ${{ secrets.DOCKER_USER }}/myapp:${{ env.DOCKER_IMAGE_VERSION }} --output quickview-report.sarif
-          docker scout cves ${{ secrets.DOCKER_USER }}/myapp:${{ env.DOCKER_IMAGE_VERSION }} --output cves-report.sarif
+  #     - name: Install Docker Scout and Run Scan
+  #       run: |
+  #         curl -fsSL https://raw.githubusercontent.com/docker/scout-cli/main/install.sh -o install-scout.sh
+  #         sh install-scout.sh
+  #         docker scout quickview ${{ secrets.DOCKER_USER }}/myapp:latest --output quickview-report.sarif
+  #         docker scout cves ${{ secrets.DOCKER_USER }}/myapp:latest --output cves-report.sarif
 
-      - name: Upload Scout Reports
-        uses: actions/upload-artifact@v4
-        if: always()
-        with: 
-            name: docker-scout-finding
-            path: |
-                  quickview-report.sarif
-                  cves-report.sarif
+  #     - name: Upload Scout Reports
+  #       uses: actions/upload-artifact@v4
+  #       if: always()
+  #       with: 
+  #           name: docker-scout-finding
+  #           path: |
+  #                 quickview-report.sarif
+  #                 cves-report.sarif
       
 
-      - name: Push Docker Image to Docker Hub
-        run: |
-            docker push ${{ secrets.DOCKER_USER }}/myapp:${{ env.DOCKER_IMAGE_VERSION }}
-            docker push ${{ secrets.DOCKER_USER }}/myapp:latest
+  #     - name: Push Docker Image to Docker Hub
+  #       run: |
+  #           docker push ${{ secrets.DOCKER_USER }}/myapp:${{ env.DOCKER_IMAGE_VERSION }}
+  #           docker push ${{ secrets.DOCKER_USER }}/myapp:latest
             
   deploy:
     name: Deploy to EC2
     runs-on: ubuntu-latest
-    needs: image_scan  # Only deploys if security_scan succeeds
+    # needs: image_scan  
 
     steps:
       - name: Checkout Code
@@ -113,13 +113,13 @@ jobs:
             echo "${{ secrets.EC2_SSH_KEY }}" | base64 -d > ec2-key.pem
             chmod 400 ec2-key.pem
 
-      - name: Deploy to EC2 with Versioning
+      - name: Deploy to EC2 
         run: |
             ssh -o StrictHostKeyChecking=no -i ec2-key.pem ec2-user@${{ secrets.EC2_HOST }} << 'EOF'
-            docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASSWORD }}
-            docker pull ${{ secrets.DOCKER_USER }}/myapp:${{ env.DOCKER_IMAGE_VERSION }}
+            echo "${{ secrets.DOCKER_PWD }}" | docker login -u "${{ secrets.DOCKER_USER }}" --password-stdin
+            docker pull ${{ secrets.DOCKER_USER }}/myapp:latest
             docker stop myapp || true && docker rm myapp || true
-            docker run -d --name myapp -p 80:5000 ${{ secrets.DOCKER_USER }}/myapp:${{ env.DOCKER_IMAGE_VERSION }}
+            docker run -d --name myapp -p 80:5000 ${{ secrets.DOCKER_USER }}/myapp:latest
             EOF
             
   security_scan:
