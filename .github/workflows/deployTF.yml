@@ -82,7 +82,10 @@ jobs:
       - name: Run API Tests
         env:
           BACKEND_URL: "http://project-473438653.eu-central-1.elb.amazonaws.com/recipesBook"
-        run: npm test
+        run: px jest --verbose --ci
+        working-directory: ./recipes-BE
+
+
 
   stop_instance:
     name: Stop 1 Instance in ASG
