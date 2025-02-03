@@ -132,7 +132,7 @@ jobs:
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ec2-user
-          key: ec2-key.pem
+          key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             docker pull ${{ secrets.DOCKER_USER }}/recipes-backend:latest
             docker pull ${{ secrets.DOCKER_USER }}/recipes-frontend:latest
