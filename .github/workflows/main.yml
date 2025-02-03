@@ -124,8 +124,8 @@ jobs:
 
       - name: Prepare SSH Key
         run: |
-            echo "${{ secrets.EC2_SSH_KEY }}" | base64 -d > ec2-key.pem
-            chmod 400 ec2-key.pem
+          echo "${{ secrets.EC2_SSH_KEY }}" > ec2-key.pem
+          chmod 600 ec2-key.pem
 
       - name: Deploy to EC2
         run: |
