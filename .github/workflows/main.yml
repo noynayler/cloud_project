@@ -75,26 +75,22 @@ jobs:
 
       - name: Build Backend Docker Image
         run: |
-          docker build -t ${{ secrets.DOCKERHUB_USER }}/recipes-backend:${{ env.DOCKER_IMAGE_VERSION }} \
-                       -t ${{ secrets.DOCKERHUB_USER }}/recipes-backend:latest \
-                       -f recipes-BE/Dockerfile recipes-BE
+          docker build -t ${{ secrets.DOCKER_USER }}/recipes-backend:${{ env.DOCKER_IMAGE_VERSION }} -t ${{ secrets.DOCKER_USER }}/recipes-backend:latest -f recipes-BE/Dockerfile recipes-BE
 
       - name: Push Backend Docker Image
         run: |
-          docker push ${{ secrets.DOCKERHUB_USER }}/recipes-backend:${{ env.DOCKER_IMAGE_VERSION }}
-          docker push ${{ secrets.DOCKERHUB_USER }}/recipes-backend:latest
+          docker push ${{ secrets.DOCKER_USER }}/recipes-backend:${{ env.DOCKER_IMAGE_VERSION }}
+          docker push ${{ secrets.DOCKER_USER }}/recipes-backend:latest
 
       # ---- FRONTEND ----
       - name: Build Frontend Docker Image
         run: |
-          docker build -t ${{ secrets.DOCKERHUB_USER }}/recipes-frontend:${{ env.DOCKER_IMAGE_VERSION }} \
-                       -t ${{ secrets.DOCKERHUB_USER }}/recipes-frontend:latest \
-                       -f recipes-fe/Dockerfile recipes-fe
+          docker build -t ${{ secrets.DOCKER_USER }}/recipes-frontend:${{ env.DOCKER_IMAGE_VERSION }} -t ${{ secrets.DOCKER_USER }}/recipes-frontend:latest -f recipes-fe/Dockerfile recipes-fe
 
       - name: Push Frontend Docker Image
         run: |
-          docker push ${{ secrets.DOCKERHUB_USER }}/recipes-frontend:${{ env.DOCKER_IMAGE_VERSION }}
-          docker push ${{ secrets.DOCKERHUB_USER }}/recipes-frontend:latest
+          docker push ${{ secrets.DOCKER_USER }}/recipes-frontend:${{ env.DOCKER_IMAGE_VERSION }}
+          docker push ${{ secrets.DOCKER_USER }}/recipes-frontend:latest
 
       # ---- image scan ----
 
@@ -138,17 +134,17 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ec2-key.pem
           script: |
-            docker pull ${{ secrets.DOCKERHUB_USER }}/recipes-backend:latest
-            docker pull ${{ secrets.DOCKERHUB_USER }}/recipes-frontend:latest
+            docker pull ${{ secrets.DOCKER_USER }}/recipes-backend:latest
+            docker pull ${{ secrets.DOCKER_USER }}/recipes-frontend:latest
 
             docker stop recipes-backend || true && docker rm recipes-backend || true
             docker stop recipes-frontend || true && docker rm recipes-frontend || true
 
             docker run -d -p 3001:3001 --name recipes-backend \
-              ${{ secrets.DOCKERHUB_USER }}/recipes-backend:latest
+              ${{ secrets.DOCKER_USER }}/recipes-backend:latest
 
             docker run -d -p 3000:3000 --name recipes-frontend \
-              ${{ secrets.DOCKERHUB_USER }}/recipes-frontend:latest
+              ${{ secrets.DOCKER_USER }}/recipes-frontend:latest
 
 
 #  security_scan:
