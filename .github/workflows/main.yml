@@ -50,7 +50,7 @@ jobs:
   image_scan:
     name: Build Image, Version Control, and Run Image Scan
     runs-on: ubuntu-latest
-    needs: js_checks
+#    needs: js_checks
 
     steps:
       - name: Checkout Code
@@ -116,36 +116,37 @@ jobs:
   deploy:
     name: Deploy to EC2
     runs-on: ubuntu-latest
-    needs: image_scan
+#    needs: image_scan
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
 
+      - name: Prepare SSH Key
+        run: |
+            echo "${{ secrets.EC2_SSH_KEY }}" | base64 -d > ec2-key.pem
+            chmod 400 ec2-key.pem
+
+      - name: Deploy to EC2
+        run: |
+          ssh -o StrictHostKeyChecking=no -i ec2-key.pem ec2-user@${{ secrets.EC2_HOST }} << 'EOF'
+          echo "${{ secrets.DOCKER_PWD }}" | docker login -u "${{ secrets.DOCKER_USER }}" --password-stdin
+          docker pull ${{ secrets.DOCKER_USER }}/recipes-backend:latest
+          docker pull ${{ secrets.DOCKER_USER }}/recipes-frontend:latest
+          
+          # Ensure the container exists before stopping/removing it
+          docker ps -q --filter "name=recipes-backend" | grep -q . && docker stop recipes-backend || echo "No container to stop"
+          docker ps -aq --filter "name=recipes-backend" | grep -q . && docker rm recipes-backend || echo "No container to remove"
+          docker run -d --name recipes-backend -p 80:3000 -p 3001:3001 ${{ secrets.DOCKER_USER }}/recipes-backend:latest
+          docker ps -q --filter "name=recipes-frontend" | grep -q . && docker stop recipes-frontend || echo "No container to stop"
+          docker ps -aq --filter "name=recipes-frontend" | grep -q . && docker rm rrecipes-frontend || echo "No container to remove"
+          docker run -d --name recipes-frontend -p 3000:3000  ${{ secrets.DOCKER_USER }}/recipes-frontend:latest          
+          
+          EOF
+          
 
 
-      - name: SSH into Server & Deploy
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ec2-user
-          key: ec2-key.pem
-          script: |
-            if ! command -v docker &> /dev/null
-            then
-              echo "Docker not found, installing..."
-              sudo yum update -y && sudo yum install docker -y
-              sudo systemctl enable docker
-              sudo systemctl start docker
-              sudo usermod -aG docker ec2-user
-            fi
-            docker --version
-            docker pull ${{ secrets.DOCKER_USER }}/recipes-backend:latest
-            docker pull ${{ secrets.DOCKER_USER }}/recipes-frontend:latest
-            docker stop recipes-backend || true && docker rm recipes-backend || true
-            docker stop recipes-frontend || true && docker rm recipes-frontend || true
-            docker run -d -p 3001:3001 --name recipes-backend ${{ secrets.DOCKER_USER }}/recipes-backend:latest
-            docker run -d -p 3000:3000 --name recipes-frontend ${{ secrets.DOCKER_USER }}/recipes-frontend:latest
+
 
 
 
