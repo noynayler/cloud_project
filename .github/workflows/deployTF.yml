@@ -59,13 +59,11 @@ jobs:
 
 
       - name: Terraform Init
-        run: terraform init
+        run: terraform init -upgrade
         working-directory: terraform
 
-
-
-      - name: Terraform Apply (Debug Mode)
-        run: terraform apply -auto-approve -input=false -no-color -parallelism=1
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
         working-directory: terraform
 
       - name: Capture ELB DNS
