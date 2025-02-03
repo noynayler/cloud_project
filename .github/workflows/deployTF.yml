@@ -74,15 +74,16 @@ jobs:
 #            echo "Terraform apply failed, destroying resources..."
 #            terraform destroy -auto-approve
 #        working-directory: terraform
-
+#
 #      - name: Capture ELB DNS
-#        run: terraform output
+#        run: echo "ELB_DNS=$(terraform output -raw elb_dns_name)" >> $GITHUB_ENV
 #        working-directory: terraform
+
 
       - name: Run API Tests
         env:
-          BACKEND_URL: "http://project-473438653.eu-central-1.elb.amazonaws.com/recipesBook"
-        run: px jest --verbose --ci
+          BACKEND_URL: "http://3.75.225.218/recipesBook"
+        run: npx jest --verbose --ci
         working-directory: ./recipes-BE
 
 
