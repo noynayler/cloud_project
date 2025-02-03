@@ -22,13 +22,13 @@ jobs:
 
       - name: Build Backend Image
         run: |
-          docker build -t ${{ secrets.DOCKER_USER }}/recipes-BE:latest -t ${{ secrets.DOCKER_USER }}/recipes-BE:${{ env.DOCKER_IMAGE_VERSION }} -f recipes-BE/Dockerfile .
-          docker push ${{ secrets.DOCKER_USER }}/recipes-BE:latest 
+          docker build -t ${{ secrets.DOCKER_USER }}/backend:latest -t ${{ secrets.DOCKER_USER }}/backend:${{ env.DOCKER_IMAGE_VERSION }} -f recipes-BE/Dockerfile .
+          docker push ${{ secrets.DOCKER_USER }}/backend:latest 
 
       - name: Build Frontend Image
         run: |
-          docker build -t ${{ secrets.DOCKER_USER }}/recipes-fe:latest -t ${{ secrets.DOCKER_USER }}/recipes-fe:${{ env.DOCKER_IMAGE_VERSION }} -f recipes-fe/Dockerfile .
-          docker push ${{ secrets.DOCKER_USER }}/recipes-fe:latest
+          docker build -t ${{ secrets.DOCKER_USER }}/frontend:latest -t ${{ secrets.DOCKER_USER }}/frontend:${{ env.DOCKER_IMAGE_VERSION }} -f recipes-fe/Dockerfile .
+          docker push ${{ secrets.DOCKER_USER }}/frontend:latest
 
   terraform:
     name: Terraform Apply
