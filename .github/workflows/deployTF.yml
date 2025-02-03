@@ -76,9 +76,7 @@ jobs:
 #        working-directory: terraform
 
       - name: Capture ELB DNS
-        run: |
-            ELB_DNS=$(terraform output -raw elb_dns_name | tr -d '\r')
-            echo "ELB_DNS=$ELB_DNS" >> $GITHUB_ENV
+        run: terraform output
         working-directory: terraform
 
   stop_instance:
