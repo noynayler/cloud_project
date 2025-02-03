@@ -41,42 +41,44 @@ jobs:
 #    needs: build_and_push_image
 
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v2
-
-      - name: Set Up Terraform
-        uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_version: 1.7.2
-
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: eu-central-1
-
-      - name: Verify AWS Credentials
-        run: aws sts get-caller-identity
-
-
-      - name: Terraform Init
-        run: terraform init -upgrade
-        working-directory: terraform
-
-      - name: Terraform Apply
-        run: terraform apply -auto-approve
-        working-directory: terraform
-
-      - name: Terraform Destroy (On Failure)
-        if: failure()
-        run: |
-            echo "Terraform apply failed, destroying resources..."
-            terraform destroy -auto-approve
-        working-directory: terraform
+#      - name: Checkout Code
+#        uses: actions/checkout@v2
+#
+#      - name: Set Up Terraform
+#        uses: hashicorp/setup-terraform@v2
+#        with:
+#          terraform_version: 1.7.2
+#
+#      - name: Configure AWS Credentials
+#        uses: aws-actions/configure-aws-credentials@v2
+#        with:
+#          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#          aws-region: eu-central-1
+#
+#      - name: Verify AWS Credentials
+#        run: aws sts get-caller-identity
+#
+#
+#      - name: Terraform Init
+#        run: terraform init -upgrade
+#        working-directory: terraform
+#
+#      - name: Terraform Apply
+#        run: terraform apply -auto-approve
+#        working-directory: terraform
+#
+#      - name: Terraform Destroy (On Failure)
+#        if: failure()
+#        run: |
+#            echo "Terraform apply failed, destroying resources..."
+#            terraform destroy -auto-approve
+#        working-directory: terraform
 
       - name: Capture ELB DNS
-        run: echo "ELB_DNS=$(terraform output -raw elb_dns_name)" >> $GITHUB_ENV
+        run: |
+            ELB_DNS=$(terraform output -raw elb_dns_name | tr -d '\r')
+            echo "ELB_DNS=$ELB_DNS" >> $GITHUB_ENV
         working-directory: terraform
 
   stop_instance:
