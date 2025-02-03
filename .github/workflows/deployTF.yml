@@ -3,40 +3,40 @@ name: Terraform Deploy and Test
 on: [push]
 
 jobs:
-  build_and_push_image:
-    name: Build & Push Docker Images
-    runs-on: ubuntu-latest
-
-
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v2
-
-      - name: Extract Version Information
-        run: |
-          VERSION=$(date +'%Y%m%d')-$(git rev-parse --short HEAD)
-          echo "DOCKER_IMAGE_VERSION=$VERSION" >> $GITHUB_ENV
-
-      - name: Login to Docker Hub
-        run: echo "${{ secrets.DOCKER_PWD }}" | docker login -u "${{ secrets.DOCKER_USER }}" --password-stdin
-
-      - name: Build Backend Image
-        run: |
-          docker build -t ${{ secrets.DOCKER_USER }}/backend:latest -t ${{ secrets.DOCKER_USER }}/backend:${{ env.DOCKER_IMAGE_VERSION }} -f recipes-BE/Dockerfile ./recipes-BE
-          docker push ${{ secrets.DOCKER_USER }}/backend:latest 
-          docker push ${{ secrets.DOCKER_USER }}/backend:${{ env.DOCKER_IMAGE_VERSION }} 
-
-      - name: Build Frontend Image
-        run: |
-          docker build -t ${{ secrets.DOCKER_USER }}/frontend:latest -t ${{ secrets.DOCKER_USER }}/frontend:${{ env.DOCKER_IMAGE_VERSION }} -f recipes-fe/Dockerfile ./recipes-fe
-          docker push ${{ secrets.DOCKER_USER }}/frontend:latest
-          docker push ${{ secrets.DOCKER_USER }}/frontend:${{ env.DOCKER_IMAGE_VERSION }} 
-  
+#  build_and_push_image:
+#    name: Build & Push Docker Images
+#    runs-on: ubuntu-latest
+#
+#
+#    steps:
+#      - name: Checkout Code
+#        uses: actions/checkout@v2
+#
+#      - name: Extract Version Information
+#        run: |
+#          VERSION=$(date +'%Y%m%d')-$(git rev-parse --short HEAD)
+#          echo "DOCKER_IMAGE_VERSION=$VERSION" >> $GITHUB_ENV
+#
+#      - name: Login to Docker Hub
+#        run: echo "${{ secrets.DOCKER_PWD }}" | docker login -u "${{ secrets.DOCKER_USER }}" --password-stdin
+#
+#      - name: Build Backend Image
+#        run: |
+#          docker build -t ${{ secrets.DOCKER_USER }}/backend:latest -t ${{ secrets.DOCKER_USER }}/backend:${{ env.DOCKER_IMAGE_VERSION }} -f recipes-BE/Dockerfile ./recipes-BE
+#          docker push ${{ secrets.DOCKER_USER }}/backend:latest
+#          docker push ${{ secrets.DOCKER_USER }}/backend:${{ env.DOCKER_IMAGE_VERSION }}
+#
+#      - name: Build Frontend Image
+#        run: |
+#          docker build -t ${{ secrets.DOCKER_USER }}/frontend:latest -t ${{ secrets.DOCKER_USER }}/frontend:${{ env.DOCKER_IMAGE_VERSION }} -f recipes-fe/Dockerfile ./recipes-fe
+#          docker push ${{ secrets.DOCKER_USER }}/frontend:latest
+#          docker push ${{ secrets.DOCKER_USER }}/frontend:${{ env.DOCKER_IMAGE_VERSION }}
+#
 
   terraform:
     name: Terraform Apply
     runs-on: ubuntu-latest
-    needs: build_and_push_image
+#    needs: build_and_push_image
 
     steps:
       - name: Checkout Code
@@ -55,6 +55,7 @@ jobs:
 
       - name: Terraform Init
         run: terraform init
+        working-directory: terraform
 
       - name: Replace Secrets in app-start.sh
         run: |
@@ -63,9 +64,11 @@ jobs:
 
       - name: Terraform Apply
         run: terraform apply -auto-approve
+        working-directory: terraform
 
       - name: Capture ELB DNS
         run: echo "ELB_DNS=$(terraform output -raw elb_dns_name)" >> $GITHUB_ENV
+        working-directory: terraform
 
   stop_instance:
     name: Stop 1 Instance in ASG
@@ -115,3 +118,4 @@ jobs:
 
       - name: Terraform Destroy
         run: terraform destroy -auto-approve
+        working-directory: terraform
