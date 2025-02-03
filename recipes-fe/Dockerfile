@@ -1,38 +1,35 @@
-# Use Node.js 18 as the base image
+# Stage 1: Frontend Setup
 FROM node:18 AS frontend
 
-# Set the working directory
+# Set working directory
 WORKDIR /cloud_project/recipes-fe
 
-# Copy package.json and package-lock.json first for better caching
-COPY recipes-fe/package*.json ./
+# Copy package.json first for better caching
+COPY package*.json ./
 
 # Install dependencies
 RUN npm install
 
-# Copy the entire frontend code
-COPY recipes-fe/ .
+# Copy frontend code
+COPY . .
 
-# Build the frontend
+# Build frontend
 RUN npm run build
 
-# Use a lightweight web server to serve the frontend
+# Stage 2: Serve the frontend using a lightweight server
 FROM node:18
 
-# Set the working directory for serving
+# Set working directory for serving
 WORKDIR /cloud_project
 
-# Install serve to serve the frontend
+# Install serve for serving the frontend
 RUN npm install -g serve
 
 # Copy built frontend from the previous stage
+COPY --from=frontend /cloud_project/recipes-fe/build /recipes-fe/build
 
-COPY --from=frontend /cloud_project/recipes-fe/build recipes-fe/build
 # Expose frontend port
 EXPOSE 3000
 
 # Serve the frontend
-CMD ["serve", "-s", "build", "-l", "3000"]
-
-
-
+CMD ["serve", "-s", "/recipes-fe/build", "-l", "3000"]
