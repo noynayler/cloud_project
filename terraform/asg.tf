@@ -17,7 +17,6 @@ resource "aws_launch_template" "asg-launch-template" {
 }
 
 
-
 resource "aws_autoscaling_group" "asg" {
   name     = "myASG"
   launch_template {
