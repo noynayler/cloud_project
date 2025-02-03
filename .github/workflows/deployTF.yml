@@ -1,138 +1,138 @@
-name: Terraform Deploy and Test
-
-on: [push]
-
-
-jobs:
-#  build_and_push_image:
-#    name: Build & Push Docker Images
-#    runs-on: ubuntu-latest
+#name: Terraform Deploy and Test
 #
+#on: [push]
+#
+#
+#jobs:
+##  build_and_push_image:
+##    name: Build & Push Docker Images
+##    runs-on: ubuntu-latest
+##
+##
+##    steps:
+##      - name: Checkout Code
+##        uses: actions/checkout@v2
+##
+##      - name: Extract Version Information
+##        run: |
+##          VERSION=$(date +'%Y%m%d')-$(git rev-parse --short HEAD)
+##          echo "DOCKER_IMAGE_VERSION=$VERSION" >> $GITHUB_ENV
+##
+##      - name: Login to Docker Hub
+##        run: echo "${{ secrets.DOCKER_PWD }}" | docker login -u "${{ secrets.DOCKER_USER }}" --password-stdin
+##
+##      - name: Build Backend Image
+##        run: |
+##          docker build -t ${{ secrets.DOCKER_USER }}/backend:latest -t ${{ secrets.DOCKER_USER }}/backend:${{ env.DOCKER_IMAGE_VERSION }} -f recipes-BE/Dockerfile ./recipes-BE
+##          docker push ${{ secrets.DOCKER_USER }}/backend:latest
+##          docker push ${{ secrets.DOCKER_USER }}/backend:${{ env.DOCKER_IMAGE_VERSION }}
+##
+##      - name: Build Frontend Image
+##        run: |
+##          docker build -t ${{ secrets.DOCKER_USER }}/frontend:latest -t ${{ secrets.DOCKER_USER }}/frontend:${{ env.DOCKER_IMAGE_VERSION }} -f recipes-fe/Dockerfile ./recipes-fe
+##          docker push ${{ secrets.DOCKER_USER }}/frontend:latest
+##          docker push ${{ secrets.DOCKER_USER }}/frontend:${{ env.DOCKER_IMAGE_VERSION }}
+##
+#
+#  terraform:
+#    name: Terraform Apply
+#    runs-on: ubuntu-latest
+##    needs: build_and_push_image
 #
 #    steps:
 #      - name: Checkout Code
 #        uses: actions/checkout@v2
 #
-#      - name: Extract Version Information
+#      - name: Set Up Terraform
+#        uses: hashicorp/setup-terraform@v2
+#        with:
+#          terraform_version: 1.7.2
+#
+#      - name: Configure AWS Credentials
+#        uses: aws-actions/configure-aws-credentials@v2
+#        with:
+#          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#          aws-region: eu-central-1
+#
+#      - name: Verify AWS Credentials
+#        run: aws sts get-caller-identity
+#
+#
+#      - name: Terraform Init
+#        run: terraform init -upgrade
+#        working-directory: terraform
+#
+#      - name: Terraform Apply
+#        run: terraform apply -auto-approve
+#        working-directory: terraform
+#
+#      - name: Terraform Destroy (On Failure)
+#        if: failure()
 #        run: |
-#          VERSION=$(date +'%Y%m%d')-$(git rev-parse --short HEAD)
-#          echo "DOCKER_IMAGE_VERSION=$VERSION" >> $GITHUB_ENV
+#            echo "Terraform apply failed, destroying resources..."
+#            terraform destroy -auto-approve
+#        working-directory: terraform
 #
-#      - name: Login to Docker Hub
-#        run: echo "${{ secrets.DOCKER_PWD }}" | docker login -u "${{ secrets.DOCKER_USER }}" --password-stdin
+#      - name: Capture ELB DNS
+#        run: echo "ELB_DNS=$(terraform output -raw elb_dns_name)" >> $GITHUB_ENV
+#        working-directory: terraform
 #
-#      - name: Build Backend Image
+#
+#      - name: Run API Tests
+#        env:
+#          BACKEND_URL: "http://3.75.225.218/recipesBook"
+#        run: npx jest --verbose --ci
+#
+#
+#
+#
+#  stop_instance:
+#    name: Stop 1 Instance in ASG
+#    runs-on: ubuntu-latest
+#    needs: terraform
+#
+#    steps:
+#      - name: Stop One EC2 Instance
 #        run: |
-#          docker build -t ${{ secrets.DOCKER_USER }}/backend:latest -t ${{ secrets.DOCKER_USER }}/backend:${{ env.DOCKER_IMAGE_VERSION }} -f recipes-BE/Dockerfile ./recipes-BE
-#          docker push ${{ secrets.DOCKER_USER }}/backend:latest
-#          docker push ${{ secrets.DOCKER_USER }}/backend:${{ env.DOCKER_IMAGE_VERSION }}
+#          INSTANCE_ID=$(aws autoscaling describe-auto-scaling-instances \
+#            --query 'AutoScalingInstances[0].InstanceId' --output text)
 #
-#      - name: Build Frontend Image
+#          echo "Stopping instance: $INSTANCE_ID"
+#          aws ec2 stop-instances --instance-ids $INSTANCE_ID
+#
+#      - name: Wait for Instance to Stop
 #        run: |
-#          docker build -t ${{ secrets.DOCKER_USER }}/frontend:latest -t ${{ secrets.DOCKER_USER }}/frontend:${{ env.DOCKER_IMAGE_VERSION }} -f recipes-fe/Dockerfile ./recipes-fe
-#          docker push ${{ secrets.DOCKER_USER }}/frontend:latest
-#          docker push ${{ secrets.DOCKER_USER }}/frontend:${{ env.DOCKER_IMAGE_VERSION }}
+#          INSTANCE_ID=$(aws autoscaling describe-auto-scaling-instances \
+#            --query 'AutoScalingInstances[0].InstanceId' --output text)
 #
-
-  terraform:
-    name: Terraform Apply
-    runs-on: ubuntu-latest
-#    needs: build_and_push_image
-
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v2
-
-      - name: Set Up Terraform
-        uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_version: 1.7.2
-
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: eu-central-1
-
-      - name: Verify AWS Credentials
-        run: aws sts get-caller-identity
-
-
-      - name: Terraform Init
-        run: terraform init -upgrade
-        working-directory: terraform
-
-      - name: Terraform Apply
-        run: terraform apply -auto-approve
-        working-directory: terraform
-
-      - name: Terraform Destroy (On Failure)
-        if: failure()
-        run: |
-            echo "Terraform apply failed, destroying resources..."
-            terraform destroy -auto-approve
-        working-directory: terraform
-
-      - name: Capture ELB DNS
-        run: echo "ELB_DNS=$(terraform output -raw elb_dns_name)" >> $GITHUB_ENV
-        working-directory: terraform
-
-
-      - name: Run API Tests
-        env:
-          BACKEND_URL: "http://3.75.225.218/recipesBook"
-        run: npx jest --verbose --ci
-
-
-
-
-  stop_instance:
-    name: Stop 1 Instance in ASG
-    runs-on: ubuntu-latest
-    needs: terraform
-
-    steps:
-      - name: Stop One EC2 Instance
-        run: |
-          INSTANCE_ID=$(aws autoscaling describe-auto-scaling-instances \
-            --query 'AutoScalingInstances[0].InstanceId' --output text)
-          
-          echo "Stopping instance: $INSTANCE_ID"
-          aws ec2 stop-instances --instance-ids $INSTANCE_ID
-
-      - name: Wait for Instance to Stop
-        run: |
-          INSTANCE_ID=$(aws autoscaling describe-auto-scaling-instances \
-            --query 'AutoScalingInstances[0].InstanceId' --output text)
-
-          aws ec2 wait instance-stopped --instance-ids $INSTANCE_ID
-          echo "Instance $INSTANCE_ID stopped."
-
-  test:
-    name: Run Tests
-    runs-on: ubuntu-latest
-    needs: stop_instance
-
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v2
-
-      - name: Run API Tests
-        env:
-          BACKEND_URL: "http://$ELB_DNS/recipesBook"
-        run: npm test
-
-  destroy:
-    name: Destroy Terraform Resources
-    runs-on: ubuntu-latest
-    needs: test
-    if: success()
-
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v2
-
-      - name: Terraform Destroy
-        run: terraform destroy -auto-approve
-        working-directory: terraform
+#          aws ec2 wait instance-stopped --instance-ids $INSTANCE_ID
+#          echo "Instance $INSTANCE_ID stopped."
+#
+#  test:
+#    name: Run Tests
+#    runs-on: ubuntu-latest
+#    needs: stop_instance
+#
+#    steps:
+#      - name: Checkout Code
+#        uses: actions/checkout@v2
+#
+#      - name: Run API Tests
+#        env:
+#          BACKEND_URL: "http://$ELB_DNS/recipesBook"
+#        run: npm test
+#
+#  destroy:
+#    name: Destroy Terraform Resources
+#    runs-on: ubuntu-latest
+#    needs: test
+#    if: success()
+#
+#    steps:
+#      - name: Checkout Code
+#        uses: actions/checkout@v2
+#
+#      - name: Terraform Destroy
+#        run: terraform destroy -auto-approve
+#        working-directory: terraform
