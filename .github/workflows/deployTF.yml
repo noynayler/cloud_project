@@ -63,6 +63,7 @@ jobs:
         working-directory: terraform
 
       - name: Replace Secrets in app-start.sh
+        working-directory: terraform
         run: |
             sed -i "s|\${DOCKER_USER}|${{ secrets.DOCKER_USER }}|g" app-start.sh
             sed -i "s|\${DOCKER_PWD}|${{ secrets.DOCKER_PWD }}|g" app-start.sh
