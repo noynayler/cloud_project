@@ -14,21 +14,24 @@ jobs:
 
       - name: Extract Version Information
         run: |
-            VERSION=$(date +'%Y%m%d')-$(git rev-parse --short HEAD)
-            echo "DOCKER_IMAGE_VERSION=$VERSION" >> $GITHUB_ENV
+          VERSION=$(date +'%Y%m%d')-$(git rev-parse --short HEAD)
+          echo "DOCKER_IMAGE_VERSION=$VERSION" >> $GITHUB_ENV
 
       - name: Login to Docker Hub
         run: echo "${{ secrets.DOCKER_PWD }}" | docker login -u "${{ secrets.DOCKER_USER }}" --password-stdin
 
       - name: Build Backend Image
         run: |
-          docker build -t ${{ secrets.DOCKER_USER }}/backend:latest -t ${{ secrets.DOCKER_USER }}/backend:${{ env.DOCKER_IMAGE_VERSION }} -f recipes-BE/Dockerfile .
+          docker build -t ${{ secrets.DOCKER_USER }}/backend:latest -t ${{ secrets.DOCKER_USER }}/backend:${{ env.DOCKER_IMAGE_VERSION }} -f recipes-BE/Dockerfile ./recipes-BE
           docker push ${{ secrets.DOCKER_USER }}/backend:latest 
+          docker push ${{ secrets.DOCKER_USER }}/backend:${{ env.DOCKER_IMAGE_VERSION }} 
 
       - name: Build Frontend Image
         run: |
-          docker build -t ${{ secrets.DOCKER_USER }}/frontend:latest -t ${{ secrets.DOCKER_USER }}/frontend:${{ env.DOCKER_IMAGE_VERSION }} -f recipes-fe/Dockerfile .
+          docker build -t ${{ secrets.DOCKER_USER }}/frontend:latest -t ${{ secrets.DOCKER_USER }}/frontend:${{ env.DOCKER_IMAGE_VERSION }} -f recipes-fe/Dockerfile ./recipes-fe
           docker push ${{ secrets.DOCKER_USER }}/frontend:latest
+          docker push ${{ secrets.DOCKER_USER }}/frontend:${{ env.DOCKER_IMAGE_VERSION }} 
+  
 
   terraform:
     name: Terraform Apply

@@ -26,10 +26,13 @@ WORKDIR /cloud_project
 RUN npm install -g serve
 
 # Copy built frontend from the previous stage
-COPY --from=frontend /app/build /app/build
 
+COPY --from=frontend /cloud_project/recipes-fe/build recipes-fe/build
 # Expose frontend port
 EXPOSE 3000
 
 # Serve the frontend
 CMD ["serve", "-s", "build", "-l", "3000"]
+
+
+
