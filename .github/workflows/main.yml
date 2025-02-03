@@ -129,19 +129,24 @@ jobs:
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ec2-user
-          key: ${{ secrets.EC2_SSH_KEY }}
+          key: ec2-key.pem
           script: |
+            if ! command -v docker &> /dev/null
+            then
+              echo "Docker not found, installing..."
+              sudo yum update -y && sudo yum install docker -y
+              sudo systemctl enable docker
+              sudo systemctl start docker
+              sudo usermod -aG docker ec2-user
+            fi
+            docker --version
             docker pull ${{ secrets.DOCKER_USER }}/recipes-backend:latest
             docker pull ${{ secrets.DOCKER_USER }}/recipes-frontend:latest
-
             docker stop recipes-backend || true && docker rm recipes-backend || true
             docker stop recipes-frontend || true && docker rm recipes-frontend || true
+            docker run -d -p 3001:3001 --name recipes-backend ${{ secrets.DOCKER_USER }}/recipes-backend:latest
+            docker run -d -p 3000:3000 --name recipes-frontend ${{ secrets.DOCKER_USER }}/recipes-frontend:latest
 
-            docker run -d -p 3001:3001 --name recipes-backend \
-              ${{ secrets.DOCKER_USER }}/recipes-backend:latest
-
-            docker run -d -p 3000:3000 --name recipes-frontend \
-              ${{ secrets.DOCKER_USER }}/recipes-frontend:latest
 
 
 #  security_scan:
