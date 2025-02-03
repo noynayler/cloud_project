@@ -1,7 +1,7 @@
 resource "aws_launch_template" "asg-launch-template" {
   name = "web_servers_lt"
   image_id = local.app_ami
-  key_name = local.ec2_key_name
+#   key_name = local.ec2_key_name
   instance_type   = local.instance_type
   vpc_security_group_ids = [ aws_security_group.web_servers.id, aws_security_group.internal.id ]
   tag_specifications {

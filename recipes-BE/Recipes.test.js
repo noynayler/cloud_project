@@ -1,53 +1,50 @@
 const request = require('supertest');
-const express = require('express');
-const recipeRoutes = require('./routes/recipeRoutes');
-const Recipe = require('./models/Recipe'); // Adjust the path to your Recipe model
-const bodyParser = require('body-parser');
 
-// Initialize the Express app
-const app = express();
-app.use(bodyParser.json());
-app.use('/recipesBook', recipeRoutes);
+const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:3001/recipesBook';
 
-describe('Backend API Tests: Simulating Frontend Requests', () => {
+describe('Backend API Tests: Create and Delete Recipe', () => {
   let createdRecipeId;
 
-  it('should create a recipe and delete it without affecting other data', async () => {
+  it('✅ Should create a new recipe', async () => {
     const newRecipe = {
-      title: 'Temporary Recipe',
-      ingredients: 'Temporary Ingredient1, Temporary Ingredient2',
-      directions: 'Temporary Step 1, Temporary Step 2',
+      title: 'Test Recipe',
+      ingredients: 'Ingredient1, Ingredient2',
+      directions: 'Step 1, Step 2'
     };
 
-    // Create a recipe
-    const createResponse = await request(app)
-      .post('/recipesBook')
+    const response = await request(BACKEND_URL)
+      .post('/')
       .send(newRecipe)
-      .expect('Content-Type', /json/)
       .expect(201);
 
-    const createdRecipe = createResponse.body;
-    createdRecipeId = createdRecipe.id;
+    createdRecipeId = response.body.id;
+    expect(response.body.title).toBe(newRecipe.title);
+    console.log(`✅ Created recipe ID: ${createdRecipeId}`);
+  });
 
-    // Assert creation
-    expect(createdRecipe).toMatchObject({
-      title: 'Temporary Recipe',
-      ingredients: 'Temporary Ingredient1, Temporary Ingredient2',
-      directions: 'Temporary Step 1, Temporary Step 2',
-    });
+  it('✅ Should fetch the created recipe', async () => {
+    const response = await request(BACKEND_URL)
+      .get(`/${createdRecipeId}`)
+      .expect(200);
 
-    // Delete the created recipe
-    const deleteResponse = await request(app)
-      .delete(`/recipesBook/${createdRecipeId}`)
-      .expect(204); // Expect HTTP 204 No Content
+    expect(response.body.id).toBe(createdRecipeId);
+    expect(response.body.title).toBe('Test Recipe');
+  });
 
-    expect(deleteResponse.status).toBe(204);
+  it('✅ Should delete the created recipe', async () => {
+    const response = await request(BACKEND_URL)
+      .delete(`/${createdRecipeId}`)
+      .expect(204);
 
-    // Verify the recipe is deleted
-    const getResponse = await request(app)
-      .get(`/recipesBook/${createdRecipeId}`)
+    expect(response.status).toBe(204);
+    console.log(`✅ Deleted recipe ID: ${createdRecipeId}`);
+  });
+
+  it('✅ Should return 404 when fetching deleted recipe', async () => {
+    const response = await request(BACKEND_URL)
+      .get(`/${createdRecipeId}`)
       .expect(404);
 
-    expect(getResponse.body).toMatchObject({ message: 'Recipe not found' });
+    expect(response.body).toMatchObject({ message: 'Recipe not found' });
   });
 });

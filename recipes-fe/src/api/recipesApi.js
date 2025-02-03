@@ -8,7 +8,7 @@ import axios from 'axios';
 //   apiEndpoint = 'http://localhost:3001/recipesBook';
 // }
 
-const apiEndpoint = 'http://18.185.25.51:3001/recipesBook' || 'http://localhost:3001/recipesBook';
+const apiEndpoint = 'http://backend:3001/recipesBook' || 'http://localhost:3001/recipesBook';
 
 export const fetchRecipes = () => axios.get(apiEndpoint);
 export const fetchRecipe = id => axios.get(`${apiEndpoint}/${id}`);
