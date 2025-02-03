@@ -75,7 +75,7 @@ jobs:
 
       - name: Build Backend Docker Image
         run: |
-          docker build -t ${{ secrets.DOCKER_USER }}/recipes-backend:${{ env.DOCKER_IMAGE_VERSION }} -t ${{ secrets.DOCKER_USER }}/recipes-backend:latest -f recipes-BE/Dockerfile recipes-BE
+          docker build -t ${{ secrets.DOCKER_USER }}/recipes-backend:${{ env.DOCKER_IMAGE_VERSION }} -t ${{ secrets.DOCKER_USER }}/recipes-backend:latest -f recipes-BE/Dockerfile recipes-BE/
 
       - name: Push Backend Docker Image
         run: |
@@ -85,7 +85,7 @@ jobs:
       # ---- FRONTEND ----
       - name: Build Frontend Docker Image
         run: |
-          docker build -t ${{ secrets.DOCKER_USER }}/recipes-frontend:${{ env.DOCKER_IMAGE_VERSION }} -t ${{ secrets.DOCKER_USER }}/recipes-frontend:latest -f recipes-fe/Dockerfile recipes-fe
+          docker build -t ${{ secrets.DOCKER_USER }}/recipes-frontend:${{ env.DOCKER_IMAGE_VERSION }} -t ${{ secrets.DOCKER_USER }}/recipes-frontend:latest -f recipes-fe/Dockerfile recipes-fe/
 
       - name: Push Frontend Docker Image
         run: |

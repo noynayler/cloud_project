@@ -5,13 +5,13 @@ FROM node:20 AS backend
 WORKDIR /cloud_project/recipes-BE
 
 # Copy only package.json first (improves caching)
-COPY recipes-BE/package*.json ./
+COPY package*.json ./
 
 # Install dependencies
 RUN npm install
 
 # Copy backend source code
-COPY recipes-BE/ .
+COPY . .
 
 # Expose backend port
 EXPOSE 5000

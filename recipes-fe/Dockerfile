@@ -5,13 +5,13 @@ FROM node:18 AS frontend
 WORKDIR /cloud_project/recipes-fe
 
 # Copy only package.json first (improves caching)
-COPY recipes-fe/package*.json ./
+COPY package*.json ./
 
 # Install dependencies
 RUN npm install
 
 # Copy frontend source code
-COPY recipes-fe/ .
+COPY . .
 
 # Build frontend
 RUN npm run build
