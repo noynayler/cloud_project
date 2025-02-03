@@ -68,6 +68,13 @@ jobs:
         run: terraform apply -auto-approve
         working-directory: terraform
 
+      - name: Terraform Destroy (On Failure)
+        if: failure()
+        run: |
+            echo "Terraform apply failed, destroying resources..."
+            terraform destroy -auto-approve
+        working-directory: terraform
+
       - name: Capture ELB DNS
         run: echo "ELB_DNS=$(terraform output -raw elb_dns_name)" >> $GITHUB_ENV
         working-directory: terraform
