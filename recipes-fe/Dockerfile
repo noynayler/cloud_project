@@ -2,7 +2,7 @@
 FROM node:18 AS frontend
 
 # Set the working directory
-WORKDIR /cloud_project
+WORKDIR /cloud_project/recipes-fe
 
 # Copy package.json and package-lock.json first for better caching
 COPY recipes-fe/package*.json ./

@@ -2,7 +2,7 @@
 FROM node:20 AS backend
 
 # Set the working directory
-WORKDIR /cloud_project
+WORKDIR /cloud_project/recipes-BE
 
 # Copy package.json and package-lock.json first for better caching
 COPY recipes-BE/package*.json ./

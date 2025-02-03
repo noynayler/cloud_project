@@ -12,18 +12,23 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v2
 
+      - name: Extract Version Information
+        run: |
+            VERSION=$(date +'%Y%m%d')-$(git rev-parse --short HEAD)
+            echo "DOCKER_IMAGE_VERSION=$VERSION" >> $GITHUB_ENV
+
       - name: Login to Docker Hub
         run: echo "${{ secrets.DOCKER_PWD }}" | docker login -u "${{ secrets.DOCKER_USER }}" --password-stdin
 
       - name: Build Backend Image
         run: |
-          docker build -t ${{ secrets.DOCKER_USER }}/backend:latest -f recipes-BE/Dockerfile .
-          docker push ${{ secrets.DOCKER_USER }}/backend:latest
+          docker build -t ${{ secrets.DOCKER_USER }}/recipes-BE:latest -t ${{ secrets.DOCKER_USER }}/recipes-BE:${{ env.DOCKER_IMAGE_VERSION }} -f recipes-BE/Dockerfile .
+          docker push ${{ secrets.DOCKER_USER }}/recipes-BE:latest 
 
       - name: Build Frontend Image
         run: |
-          docker build -t ${{ secrets.DOCKER_USER }}/frontend:latest -f recipes-fe/Dockerfile .
-          docker push ${{ secrets.DOCKER_USER }}/frontend:latest
+          docker build -t ${{ secrets.DOCKER_USER }}/recipes-fe:latest -t ${{ secrets.DOCKER_USER }}/recipes-fe:${{ env.DOCKER_IMAGE_VERSION }} -f recipes-fe/Dockerfile .
+          docker push ${{ secrets.DOCKER_USER }}/recipes-fe:latest
 
   terraform:
     name: Terraform Apply
