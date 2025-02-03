@@ -51,3 +51,4 @@ terraform.rc
 
 #node directory
 /recipes-fe/node_modules
+/terraform/provider.tf
