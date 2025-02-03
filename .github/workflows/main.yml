@@ -77,7 +77,7 @@ jobs:
         run: |
           docker build -t ${{ secrets.DOCKERHUB_USER }}/recipes-backend:${{ env.DOCKER_IMAGE_VERSION }} \
                        -t ${{ secrets.DOCKERHUB_USER }}/recipes-backend:latest \
-                       -f recipes-BE/Dockerfile.backend recipes-BE
+                       -f recipes-BE/Dockerfile recipes-BE
 
       - name: Push Backend Docker Image
         run: |
@@ -89,7 +89,7 @@ jobs:
         run: |
           docker build -t ${{ secrets.DOCKERHUB_USER }}/recipes-frontend:${{ env.DOCKER_IMAGE_VERSION }} \
                        -t ${{ secrets.DOCKERHUB_USER }}/recipes-frontend:latest \
-                       -f recipes-fe/Dockerfile.frontend recipes-fe
+                       -f recipes-fe/Dockerfile recipes-fe
 
       - name: Push Frontend Docker Image
         run: |

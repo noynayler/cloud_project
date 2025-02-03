@@ -1,20 +1,21 @@
-# Stage 1: Backend Setup
+# Backend Setup
 FROM node:20 AS backend
 
 # Set working directory
 WORKDIR /cloud_project/recipes-BE
 
-# Copy package.json first for better caching
-COPY package*.json ./
+# Copy only package.json first (improves caching)
+COPY recipes-BE/package*.json ./
 
 # Install dependencies
 RUN npm install
 
-# Copy backend code
-COPY . .
+# Copy backend source code
+COPY recipes-BE/ .
 
 # Expose backend port
-EXPOSE 3001
+EXPOSE 5000
 
-# Start the backend server
+# Start the backend
 CMD ["npm", "start"]
+
