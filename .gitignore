@@ -28,9 +28,7 @@ bin/
 ### Mac OS ###
 .DS_Store
 
-# Terraform directories
-.terraform/
-terraform/.terraform/
+
 # Ignore tfstate files
 *.tfstate
 *.tfstate.*
@@ -52,4 +50,4 @@ terraform.rc
 *.exe
 
 #node directory
-/recipes-FE/node_modules
+/recipes-fe/node_modules

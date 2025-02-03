@@ -1,35 +1,112 @@
-name: Terraform Deployment
+name: Terraform Deploy and Test
 
 on:
-  workflow_dispatch: # Allows manual triggering of the workflow from the Actions tab
+  push:
+    branches:
+      - main
 
 jobs:
-  terraform:
+  build_and_push_image:
+    name: Build & Push Docker Images
     runs-on: ubuntu-latest
 
+
     steps:
-      - name: Checkout Repository
+      - name: Checkout Code
         uses: actions/checkout@v2
 
-      
-      - name: Setup Terraform
+      - name: Login to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Build Backend Image
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/backend:latest -f recipes-BE/Dockerfile .
+          docker push ${{ secrets.DOCKER_USERNAME }}/backend:latest
+
+      - name: Build Frontend Image
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/frontend:latest -f recipes-fe/Dockerfile .
+          docker push ${{ secrets.DOCKER_USERNAME }}/frontend:latest
+
+  terraform:
+    name: Terraform Apply
+    runs-on: ubuntu-latest
+    needs: build_and_push
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Set Up Terraform
         uses: hashicorp/setup-terraform@v2
         with:
-          terraform_version: 1.4.6
+          terraform_version: 1.7.2
 
-     
+      - name: Configure AWS Credentials
+        run: |
+          echo "AWS_ACCESS_KEY_ID=${{ secrets.ACCESS_KEY }}" >> $GITHUB_ENV
+          echo "AWS_SECRET_ACCESS_KEY=${{ secrets.SECRET_KEY }}" >> $GITHUB_ENV
+          echo "AWS_DEFAULT_REGION=eu-central-1" >> $GITHUB_ENV
+
       - name: Terraform Init
         run: terraform init
-        working-directory: ./terraform
 
-      
-      - name: Terraform Plan
-        run: terraform plan -out=tfplan
-        working-directory: ./terraform
+      - name: Replace Secrets in app-start.sh
+        run: |
+            sed -i "s|\${DOCKER_USER}|${{ secrets.DOCKER_USER }}|g" app-start.sh
+            sed -i "s|\${DOCKER_PWD}|${{ secrets.DOCKER_PWD }}|g" app-start.sh
 
-      
       - name: Terraform Apply
-        if: github.event.inputs.approve == 'true'
-        run: terraform apply tfplan
-        working-directory: ./terraform
+        run: terraform apply -auto-approve
 
+      - name: Capture ELB DNS
+        run: echo "ELB_DNS=$(terraform output -raw elb_dns_name)" >> $GITHUB_ENV
+
+  stop_instance:
+    name: Stop 1 Instance in ASG
+    runs-on: ubuntu-latest
+    needs: terraform
+
+    steps:
+      - name: Stop One EC2 Instance
+        run: |
+          INSTANCE_ID=$(aws autoscaling describe-auto-scaling-instances \
+            --query 'AutoScalingInstances[0].InstanceId' --output text)
+          
+          echo "Stopping instance: $INSTANCE_ID"
+          aws ec2 stop-instances --instance-ids $INSTANCE_ID
+
+      - name: Wait for Instance to Stop
+        run: |
+          INSTANCE_ID=$(aws autoscaling describe-auto-scaling-instances \
+            --query 'AutoScalingInstances[0].InstanceId' --output text)
+
+          aws ec2 wait instance-stopped --instance-ids $INSTANCE_ID
+          echo "Instance $INSTANCE_ID stopped."
+
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    needs: stop_instance
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Run API Tests
+        run: |
+          curl -I http://$ELB_DNS/recipesBook || exit 1
+          echo "API Test Passed"
+
+  destroy:
+    name: Destroy Terraform Resources
+    runs-on: ubuntu-latest
+    needs: test
+    if: success()
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Terraform Destroy
+        run: terraform destroy -auto-approve

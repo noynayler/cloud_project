@@ -80,3 +80,8 @@ output "elb_dns_name" {
   description = "The domain name of the load balancer"
 }
 
+# Output EC2 Instance Public IPs
+output "ec2_public_ips" {
+  value       = aws_instance.my_instances[*].public_ip
+  description = "List of public IPs of EC2 instances"
+}
