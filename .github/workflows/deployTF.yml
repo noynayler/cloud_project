@@ -84,7 +84,7 @@ jobs:
         env:
           BACKEND_URL: "http://3.75.225.218/recipesBook"
         run: npx jest --verbose --ci
-        working-directory: ./recipes-BE
+
 
 
 
