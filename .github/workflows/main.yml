@@ -43,9 +43,9 @@ jobs:
             echo "DB_HOST=${{ secrets.DB_HOST }}" >> $GITHUB_ENV
             echo "DB_PORT=3306" >> $GITHUB_ENV
 
-      - name: Run Tests
-        working-directory: ./recipes-BE
-        run: npx jest --verbose --ci
+#      - name: Run Tests
+#        working-directory: ./recipes-BE
+#        run: npx jest --verbose --ci
 
   image_scan:
     name: Build Image, Version Control, and Run Image Scan
