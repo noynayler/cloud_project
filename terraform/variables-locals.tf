@@ -8,5 +8,6 @@ locals {
   public_subnets = ["10.10.0.0/20", "10.10.16.0/20"] # IP ranges for public subnets
 
   ec2_key_name   = "YOUR_KEY_NAME"  # Replace with a placeholder (e.g., "<YOUR_KEY_NAME>")
-  app_ami        = "ami-<PLACEHOLDER>" # Replace with a placeholder or describe in README
+  app_ami        = "ami-0c55b159cbfafe1f0" # Replace with a placeholder or describe in README
   instance_type  = "t2.micro"       # Generalized instance type
+}
