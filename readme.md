@@ -32,29 +32,6 @@ This project is a **Recipes Book** web application that allows users to manage r
 
 ---
 
-## CI/CD Pipeline
-
-### Steps Included in the Pipeline
-
-1. **Linting**:
-   - ESLint checks for code quality and formatting issues.
-
-2. **Unit Testing**:
-   - Jest tests simulate frontend and backend functionality.
-
-3. **Docker Image Creation**:
-   - A Docker image is built and tagged from the backend source code.
-
-4. **Image Push to Docker Hub**:
-   - Built Docker images are pushed to Docker Hub for storage and deployment.
-
-5. **Production Deployment**:
-   - Images are deployed to an AWS EC2 instance using SSH and Docker CLI.
-
----
-
-
-
 ## Project Structure
 
 ```
@@ -92,122 +69,11 @@ cloud_project/
 └── README.md             # Project documentation
 ```
 
----
 
-## Getting Started
 
-### Prerequisites
 
-Ensure you have the following installed:
-- **Node.js** (v16 or higher)
-- **MySQL** (or an AWS RDS instance)
-- **AWS CLI** (for configuring S3)
 
----
 
-### Setup Instructions
-
-#### Backend Setup
-
-1. **Navigate to Backend Directory**:
-   ```bash
-   cd recipes-BE
-   ```
-
-2. **Install Dependencies**:
-   ```bash
-   npm install
-   ```
-
-3. **Set Environment Variables**: Create a `.env` file in the `recipes-BE/` directory with the following:
-   ```env
-   PORT=3001
-   DB_HOST=<your_database_host>
-   DB_PORT=3306
-   DB_NAME=<your_database_name>
-   DB_USER=<your_database_user>
-   DB_PASSWORD=<your_database_password>
-   S3_BUCKET_NAME=<your_s3_bucket_name>
-   AWS_REGION=<your_aws_region>
-   ```
-
-4. **Run the Backend**:
-   ```bash
-   npm start
-   ```
-
-#### Frontend Setup
-
-1. **Navigate to Frontend Directory**:
-   ```bash
-   cd recipes-FE
-   ```
-
-2. **Install Dependencies**:
-   ```bash
-   npm install
-   ```
-
-3. **Set Environment Variables**: Create a `.env` file in the `recipes-FE/` directory with the following:
-   ```env
-   REACT_APP_API_BASE_URL=http://localhost:3001/recipesBook
-   ```
-
-4. **Run the Frontend**:
-   ```bash
-   npm start
-   ```
-
----
-
-## CI/CD Pipeline
-
-### Steps Included in the Pipeline
-
-1. **Linting**:
-   - ESLint checks for code quality and formatting issues.
-
-2. **Unit Testing**:
-   - Jest tests simulate frontend and backend functionality.
-
-3. **Docker Image Creation**:
-   - A Docker image is built and tagged from the backend source code.
-
-4. **Image Push to Docker Hub**:
-   - Built Docker images are pushed to Docker Hub for storage and deployment.
-
-5. **Production Deployment**:
-   - Images are deployed to an AWS EC2 instance using SSH and Docker CLI.
-
----
-
-## API Endpoints
-
-### Recipe Management
-
-| Method | Endpoint           | Description               |
-| ------ | ------------------ | ------------------------- |
-| GET    | `/recipesBook`     | Fetch all recipes         |
-| GET    | `/recipesBook/:id` | Fetch a specific recipe   |
-| POST   | `/recipesBook`     | Create a new recipe       |
-| PUT    | `/recipesBook/:id` | Update an existing recipe |
-| DELETE | `/recipesBook/:id` | Delete a recipe           |
-
----
-
-## Deployment Overview
-
-The application follows a streamlined deployment process:
-1. **Code Push**:
-   - Developers push code changes to the GitHub repository.
-2. **Continuous Integration**:
-   - GitHub Actions run linting, testing, and build jobs.
-3. **Image Deployment**:
-   - Docker images are built and pushed to Docker Hub.
-4. **Production Deployment**:
-   - Images are deployed to an AWS EC2 instance.
-
----
 
 
 
