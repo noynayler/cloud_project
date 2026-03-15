@@ -9,26 +9,6 @@ This project is a **Recipes Book** web application that allows users to manage r
 
 ## Features
 
-### Frontend
-
-💻 **React-Based UI**: Built with reusable components and styled using modular CSS.
-
-♻️**Routing**: Utilizes React Router for navigation.
-
-📱**Responsive Design**: Optimized for multiple devices.
-
-### Backend
-
-🛠️ **Node.js and Express**: RESTful API with routes for managing recipes.
-
-📂  **MySQL Database**: Stores recipe details, hosted on AWS RDS.
-
-### Infrastructure
-
-☁️ **AWS Services**:
-
-- **RDS**: MySQL database for data persistence.
-- **S3**: For storing recipe photos.
 
 ---
 
